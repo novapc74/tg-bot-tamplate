@@ -1,0 +1,12 @@
+###> tg-bot-app ###
+/.env.local
+/var/
+/vendor/
+###< tg-bot-app ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
+
+

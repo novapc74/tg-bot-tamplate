@@ -1,0 +1,56 @@
+init: create_network docker-down docker-pull docker-build docker-up
+
+create_network:
+	@if [ -z "$$(docker network ls --filter name=tg-bot-network -q)" ]; then \
+		docker network create tg-bot-network; \
+	else \
+		echo "Docker network tg-bot-network already exists, skipping creation."; \
+	fi
+
+create_shared_network:
+	docker network create --driver bridge shared-network
+
+docker-down:
+	docker compose --env-file ./project/.env.local down --remove-orphans
+
+docker-pull:
+	docker compose --env-file ./project/.env.local pull
+
+docker-build:
+	docker compose --env-file ./project/.env.local build --pull
+
+docker-up: create_network
+	docker compose --env-file ./project/.env.local up -d
+
+php-cli:
+	docker compose --env-file ./project/.env.local run --rm php-cli bash
+
+dev-update:
+	docker compose --env-file ./project/.env.local exec php-cli bash
+	composer install
+	bin/console d:m:m --no-inreraction
+
+yarn-watch:
+	docker compose --env-file ./project/.env.local run --rm node-cli yarn watch
+
+yarn-dev:
+	docker compose --env-file ./project/.env.local run --rm node-cli yarn encore dev
+
+yarn-install:
+	docker compose --env-file ./project/.env.local run --rm node-cli yarn install --force
+
+yarn-add:
+	docker compose --env-file ./project/.env.local run --rm node-cli yarn add ...
+
+image-docker-build:
+	docker --log-level=debug build --pull --file=docker/prod/nginx/Dockerfile --tag=ghcr.io/novapc74/repository/tg_nginx:master .
+	docker --log-level=debug build --pull --file=docker/prod/php-cli/Dockerfile --tag=ghcr.io/novapc74/repository/tg_nginx:master .
+	docker --log-level=debug build --pull --file=docker/prod/php-fpm/Dockerfile --tag=ghcr.io/novapc74/repository/tg_php-fpm:master .
+
+github-login:
+	docker login ghcr.io/novapc74
+
+image-docker-push:
+	docker push ghcr.io/novapc74/repository/tg_nginx:master
+	docker push ghcr.io/novapc74/repository/tg_php-cli:master
+	docker push ghcr.io/novapc74/repository/tg_php-fpm:master

@@ -1,0 +1,19 @@
+{
+    "commands": [
+        {
+            "command": "/help",
+            "description": "- Показать справку по использованию бота."
+        },
+        {
+            "command": "/report",
+            "description": "- Сгенерировать отчет."
+        },
+        {
+            "command": "/prompt",
+            "description": "- Показать текущий prompt."
+        }
+    ],
+    "scope": {
+        "type": "default"
+    }
+}

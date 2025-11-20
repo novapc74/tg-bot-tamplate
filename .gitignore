@@ -1,0 +1,5 @@
+/.idea
+.git
+volumes/
+node_modules
+*.log

@@ -1,0 +1,22 @@
+{
+    "name": "tg_bot/template",
+    "type": "project",
+    "require": {
+        "symfony/http-client": "^7.3",
+        "php-di/php-di": "^7.1",
+        "symfony/dotenv": "^7.0",
+        "monolog/monolog": "^3.9"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "novapc74"
+        }
+    ],
+    "minimum-stability": "stable"
+}

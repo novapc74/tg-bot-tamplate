@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+
+use App\Services\HttpClient\Client\ApiTelegramClient;
+use App\Services\HttpClient\Dto\InlineKeyboardMarkupDto;
+
+if (!file_exists($bootstrap = __DIR__ . '/../config/bootstrap.php')) {
+    exit('Bootstrap file not found.');
+}
+
+require_once $bootstrap;
+
+global $container;
+
+$commandFile = __DIR__ . '/../storage/telegram/inline_keyboard_markup.json';
+
+if (!file_exists($commandFile)) {
+    exit('../storage/telegram/inline_keyboard_markup.json file not found.');
+}
+
+$content = file_get_contents($commandFile);
+$options = json_decode($content, true);
+
+/**@var ApiTelegramClient $client */
+$client = $container->get(ApiTelegramClient::class);
+$responseData = $client->request(InlineKeyboardMarkupDto::init($options));
+$data = $responseData->getData();
+
+if ($data['ok'] ?? null === 1 && $data['result'] ?? null === 1) {
+    exit("кнопки успешно отправлены\n");
+}
+exit('Что-то пошло не так, смотрите логи "tg-api-client".');

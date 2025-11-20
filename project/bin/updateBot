@@ -1,0 +1,120 @@
+#!/usr/bin/env php
+<?php
+
+use Psr\Log\LoggerInterface;
+use App\Handlers\DefaultCommandHandler;
+use App\Services\HttpClient\Dto\GetUpdatesDto;
+use App\Handlers\CommandHandlers\HelpCommandHandler;
+use App\Services\HttpClient\Client\ApiTelegramClient;
+use App\Handlers\CommandHandlers\StartCommandHandler;
+use App\Handlers\CommandHandlers\ReportCommandHandler;
+use App\Handlers\CommandHandlers\ShowPromptCommandHandler;
+use App\Handlers\CommandHandlers\UpdatePromptCommandHandler;
+
+if (!file_exists($bootstrap = __DIR__ . '/../config/bootstrap.php')) {
+    exit('Bootstrap file not found.');
+}
+
+require_once $bootstrap;
+
+global $container;
+
+/** @var ApiTelegramClient $apiClient */
+$apiClient = $container->get(ApiTelegramClient::class);
+/** @var LoggerInterface $logger */
+$logger = $container->get('telegram-client');
+
+$offset = $i = 0;
+
+$processing = function (string $text, array $update) use ($container) {
+    $text = trim(strtolower($text));
+
+    $customForms = [
+        UpdatePromptCommandHandler::COMMAND_NAME
+    ];
+
+    foreach ($customForms as $command) {
+        if (str_starts_with($text, $command)) {
+            $text = $command;
+            break;
+        }
+    }
+
+    $handle = match ($text) {
+        HelpCommandHandler::COMMAND_NAME => HelpCommandHandler::class,
+        ShowPromptCommandHandler::COMMAND_NAME => ShowPromptCommandHandler::class,
+        StartCommandHandler::COMMAND_NAME => StartCommandHandler::class,
+        UpdatePromptCommandHandler::COMMAND_NAME => UpdatePromptCommandHandler::class,
+        ReportCommandHandler::COMMAND_NAME => ReportCommandHandler::class,
+        default => DefaultCommandHandler::class
+    };
+
+    $handler = $container->get($handle);
+    $handler->handle($update);
+};
+
+while (true) {
+
+    echo $i . "\n";
+
+    $options = [
+        'json' => [
+            'offset' => $offset,
+            'timeout' => 1,
+        ]
+    ];
+
+    try {
+        $updates = $apiClient
+            ->request(GetUpdatesDto::init($options));
+        if ($updates) {
+            $updates = $updates->getData();
+        }
+
+    } catch (Exception $e) {
+        $logger->error('Ошибка при получении обновлений: ' . $e->getMessage());
+        sleep(5);
+        continue;
+    }
+
+    if (!$updates || empty($updates['ok']) || $updates['ok'] !== true || !isset($updates['result'])) {
+        $logger->error('Ошибка API: ' . json_encode($updates, JSON_UNESCAPED_UNICODE));
+        sleep(5);
+        continue;
+    }
+
+    foreach ($updates['result'] as $update) {
+        $offset = $update['update_id'] + 1; // Обновляем offset
+
+        /** обработчик кнопок */
+        if ($callBackData = $update['callback_query'] ?? null) {
+            $identifier = $callBackData['data'];
+            #TODO для использования стандартных обработчиков нужен трансформер для $update в объект с message
+            $data = $update['callback_query'];
+
+            $processing($identifier, $data);
+
+            sleep(1);
+            continue;
+        }
+
+        /** обработчик сообщений */
+        if (empty($chatId = $update['message']['chat']['id'])) {
+            $logger->error('В сообщении не передан ID чата.');
+            sleep(1);
+            continue;
+        }
+
+        if (empty($text = $update['message']['text'])) {
+            $logger->error('Пустое сообщение.');
+            sleep(1);
+            continue;
+        }
+
+        $processing($text, $update);
+    }
+
+    $i++;
+
+    sleep(1);
+}

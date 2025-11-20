@@ -1,0 +1,57 @@
+services:
+    nginx:
+        restart: always
+        image: your-registry/tg-bot-template-nginx:prod  # Ваш собранный образ с Dockerfile.prod
+        container_name: ${APP_NAME}-nginx-prod
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./project:/project
+            - ./volumes/letsencrypt:/etc/letsencrypt  # Для сертификатов
+            - ./volumes/webroot:/var/www/html  # Для webroot аутентификации
+        depends_on:
+            - php-fpm
+            - php-cli
+            - maria-db
+        networks:
+            - tg-bot-network
+
+    php-fpm:
+        image: your-registry/tg-bot-template-php-fpm:prod  # Ваш собранный образ
+        container_name: ${APP_NAME}-php-fpm-prod
+        ports:
+            - "9000:9000"
+        volumes:
+            - ./project:/project
+        networks:
+            - tg-bot-network
+
+    php-cli:
+        image: your-registry/tg-bot-template-php-cli:prod  # Ваш собранный образ
+        container_name: ${APP_NAME}-php-cli-prod
+        volumes:
+            - ./project:/project
+        networks:
+            - tg-bot-network
+
+    maria-db:
+        restart: always
+        image: mariadb:11.8.2
+        container_name: ${APP_NAME}-maria-db-prod
+        volumes:
+            - ./volumes/database/mysql:/var/lib/mysql
+        ports:
+            - "3323:3306"
+        command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+        environment:
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+        networks:
+            - tg-bot-network
+
+networks:
+    tg-bot-network:
+        external: true

@@ -1,0 +1,58 @@
+footer {
+    background-color: #f8f9fa; /* Светло-серый фон, можно изменить */
+    color: #333; /* Темный текст */
+    border-top: 1px solid #ddd; /* Легкая граница сверху */
+    padding: 20px 0; /* Внутренние отступы */
+}
+
+.footer-container {
+    max-width: 900px; /* Максимальная ширина */
+    margin: 0 auto; /* Центрирование */
+    padding: 0 20px; /* Отступы по бокам для мобильных */
+    text-align: center; /* Центрирование текста */
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center; /* Горизонтальное центрирование ссылок */
+    gap: 20px; /* Расстояние между ссылками */
+    margin-bottom: 10px; /* Отступ перед копирайтом */
+}
+
+.footer-links a {
+    color: #007bff; /* Синий цвет ссылок, как Bootstrap */
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s ease; /* Плавный переход при наведении */
+}
+
+.footer-links a:hover {
+    color: #0056b3; /* Темнее при наведении */
+}
+
+.footer-container p {
+    margin: 0;
+    font-size: 14px;
+    color: #666; /* Серый цвет для копирайта */
+}
+
+/* Адаптивность для мобильных (ширина < 768px) */
+@media (max-width: 768px) {
+    .footer-links {
+        flex-direction: column; /* Вертикальное расположение ссылок */
+        gap: 10px; /* Меньшее расстояние */
+    }
+
+    .footer-links a {
+        font-size: 14px; /* Меньший шрифт для мобильных */
+    }
+
+    .footer-container {
+        padding: 0 15px; /* Меньшие отступы */
+    }
+
+    footer {
+        padding: 15px 0; /* Меньшие внутренние отступы */
+    }
+}
+

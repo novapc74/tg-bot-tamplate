@@ -1,0 +1,28 @@
+{
+    "chat_id": "645759570",
+    "text": "Выберите опцию:",
+    "reply_markup": {
+        "inline_keyboard": [
+            [
+                {
+                    "text": "FORM",
+                    "callback_data": "/prompt_form"
+                },
+                {
+                    "text": "SHOW",
+                    "callback_data": "/show_prompt"
+                },
+                {
+                    "text": "MAKE",
+                    "callback_data": "/make_report"
+                }
+            ],
+            [
+                {
+                    "text": "HELP",
+                    "callback_data": "/help"
+                }
+            ]
+        ]
+    }
+}

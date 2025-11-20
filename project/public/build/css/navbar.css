@@ -1,0 +1,227 @@
+/* Стили для navbar */
+.my-navbar {
+    max-width: 900px;
+    background-color: #333;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    margin: auto;
+}
+
+.my-navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.my-navbar-brand {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.my-navbar-toggler {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.my-navbar-toggler-icon {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    margin: 5px 0;
+    transition: transform 0.3s ease;
+}
+
+.my-navbar-toggler.active .my-navbar-toggler-icon:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.my-navbar-toggler.active .my-navbar-toggler-icon:nth-child(2) {
+    opacity: 0;
+}
+
+.my-navbar-toggler.active .my-navbar-toggler-icon:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+}
+
+.my-navbar-menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.my-navbar-nav {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.my-nav-item {
+    margin: 0 15px;
+}
+
+.my-nav-link {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.my-nav-link:hover,
+.my-nav-link.active {
+    background-color: #555;
+    color: yellowgreen;
+}
+
+/* Стили для dropdown */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dropdown-arrow {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+    color: greenyellow;
+}
+
+.dropdown.open .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background-color: #444;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.dropdown:hover .dropdown-menu,
+.dropdown.open .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-link {
+    display: block;
+    color: #fff;
+    /*text-decoration: none;*/
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-link:hover {
+    background-color: #555;
+}
+
+.dropdown-link.first:hover {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.dropdown-link.last:hover {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+
+/* Медиа-запрос для мобильной версии (< 768px) */
+@media (max-width: 767px) {
+    .my-navbar-toggler {
+        display: block;
+    }
+
+    .my-navbar-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: #333;
+        flex-direction: column;
+        display: none; /* Скрыто по умолчанию */
+        padding: 10px 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .my-navbar-menu.open {
+        display: block; /* Показывается при классе open */
+    }
+
+    .my-navbar-nav {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .my-nav-item {
+        margin: 0;
+        width: 100%;
+    }
+
+    .my-nav-link {
+        padding: 15px 20px;
+        border-bottom: 1px solid #555;
+    }
+
+    .my-nav-link:last-child {
+        border-bottom: none;
+    }
+
+    /* Мобильный dropdown: внутри меню, static, скрыт по умолчанию */
+    .dropdown-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        background-color: #444;
+        margin-top: 0;
+        padding-left: 20px;
+        display: none; /* Скрыт по умолчанию */
+        transition: none;
+        box-shadow: none;
+    }
+
+    .dropdown.open .dropdown-menu {
+        display: block; /* Показывается при классе open на dropdown */
+    }
+
+    .dropdown-link {
+        padding: 10px 20px;
+        border-bottom: 1px solid #555;
+    }
+
+    .dropdown-link:last-child {
+        border-bottom: none;
+    }
+}
