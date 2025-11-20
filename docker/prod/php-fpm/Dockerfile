@@ -2,7 +2,7 @@ FROM php:8.4-fpm-alpine
 
 RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 
-COPY ./embed/php/conf.d $PHP_INI_DIR/conf.d
+COPY docker/embed/php/conf.d $PHP_INI_DIR/conf.d
 
 RUN apk update && apk add --no-cache \
         git \

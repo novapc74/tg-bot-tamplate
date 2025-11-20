@@ -44,11 +44,11 @@ yarn-add:
 
 image-docker-build:
 	docker --log-level=debug build --pull --file=docker/prod/nginx/Dockerfile --tag=ghcr.io/novapc74/repository/tg_nginx:master .
-	docker --log-level=debug build --pull --file=docker/prod/php-cli/Dockerfile --tag=ghcr.io/novapc74/repository/tg_nginx:master .
+	docker --log-level=debug build --pull --file=docker/prod/php-cli/Dockerfile --tag=ghcr.io/novapc74/repository/tg_php-cli:master .
 	docker --log-level=debug build --pull --file=docker/prod/php-fpm/Dockerfile --tag=ghcr.io/novapc74/repository/tg_php-fpm:master .
 
 github-login:
-	docker login ghcr.io/novapc74
+	docker login ghcr.io -u novapc74 -p GIT_USER_PASS # https://github.com/settings/tokens Token (classic)
 
 image-docker-push:
 	docker push ghcr.io/novapc74/repository/tg_nginx:master

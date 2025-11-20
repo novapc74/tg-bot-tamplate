@@ -22,7 +22,7 @@ RUN apk update && apk add --no-cache \
     && docker-php-ext-install pdo pdo_mysql zip intl \
     && rm -rf /var/cache/apk/*
 
-ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV COMPOSER_ALLOW_SUPERUSER="1"
 
 WORKDIR /project
 

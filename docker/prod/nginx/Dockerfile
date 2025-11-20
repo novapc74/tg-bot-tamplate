@@ -2,7 +2,7 @@ FROM nginx:1.25
 
 # Копируем конфиг nginx (предполагаем, что у вас есть prod-конфиг, аналогичный dev, но с SSL)
 #COPY docker/embed/nginx/default.prod.conf /etc/nginx/conf.d/default.conf
-COPY ./embed/nginx/prod /etc/nginx/conf.d
+COPY docker/embed/nginx/prod /etc/nginx/conf.d
 
 # Копируем сайт
 COPY project/public /var/www/html
