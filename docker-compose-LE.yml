@@ -7,7 +7,7 @@ services:
         entrypoint: ["sh", "-c"]
         command: >
             if [ ! -d /etc/letsencrypt/live/novapc74.twc1.net ]; then
-              certbot certonly --webroot --webroot-path=/project/public
+              certbot certonly --webroot --webroot-path=/var/www/certbot
               -d novapc74.twc1.net -d www.novapc74.twc1.net
               --agree-tos --email novapc74@yandex.ru --non-interactive
               --server https://acme-v02.api.letsencrypt.org/directory
@@ -17,7 +17,7 @@ services:
             crond -f
         volumes:
             - ./volumes/letsencrypt:/etc/letsencrypt
-            - ./volumes/webroot:/project/public
+            - ./project/public/.well-known/acme-challenge/:/var/www/certbot
         environment:
             - TERM=xterm
         networks:
