@@ -22,19 +22,19 @@ docker-pull:
 	docker compose --env-file ./project/.env.local pull
 
 prod-docker-pull:
-	docker compose -f docker-compose-prod.yml --env-flie ./project/.env.local pull
+	docker compose -f docker-compose-prod.yml --env-file ./project/.env.local pull
 
 docker-build:
 	docker compose --env-file ./project/.env.local build --pull
 
 prod-docker-build:
-	docker compose -f docker-compose-prod.yml --env-flie ./project/.env.local build --pull
+	docker compose -f docker-compose-prod.yml --env-file ./project/.env.local build --pull
 
 docker-up: create_network
 	docker compose --env-file ./project/.env.local up -d
 
 docker-prod-up:
-	docker compose -f docker-compose-prod.yml --env-flie ./project/.env.local up -d
+	docker compose -f docker-compose-prod.yml --env-file ./project/.env.local up -d
 
 php-cli:
 	docker compose --env-file ./project/.env.local run --rm php-cli bash
