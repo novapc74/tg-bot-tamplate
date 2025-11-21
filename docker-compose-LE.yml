@@ -1,10 +1,11 @@
+---
 services:
     certbot:
         image: certbot/certbot:latest
         container_name: ${APP_NAME}-certbot
         volumes:
             - ./volumes/letsencrypt:/etc/letsencrypt
-            - ./volumes/webroot:/project/public  # Изменено: теперь монтируем в /project/public
+            - ./volumes/webroot:/project/public
         command:
             - sh
             - -c
@@ -14,12 +15,11 @@ services:
                   -d novapc74.twc1.net -d www.novapc74.twc1.net \
                   --agree-tos --email novapc74@yandex.ru --non-interactive;
                 fi;
-                echo '0 */12 * * * certbot renew --quiet && docker exec tg-bot-template-nginx-prod nginx -s reload' > /etc/crontabs/root;
+                echo '0 */12 * * * certbot renew --quiet && docker exec tg-bot-template-nginx-prod nginx -s reload' \
+                > /etc/crontabs/root;
                 crond -f
-
         networks:
             - tg-bot-network
-
 networks:
     tg-bot-network:
         external: true
