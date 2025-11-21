@@ -17,8 +17,6 @@ services:
             "
         networks:
             - tg-bot-network
-        depends_on:
-            - nginx  # Nginx должен быть запущен для webroot
 
 networks:
     tg-bot-network:
