@@ -9,7 +9,7 @@ services:
         volumes:
             - ./project:/project
             - ./volumes/letsencrypt:/etc/letsencrypt:ro  # Для сертификатов
-            - ./volumes/webroot:/project/public  # Для webroot аутентификации
+            - ./volumes/webroot:/project/public:ro  # Для webroot аутентификации
         depends_on:
             - php-fpm
         networks:
