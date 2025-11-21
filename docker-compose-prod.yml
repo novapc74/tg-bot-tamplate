@@ -8,8 +8,8 @@ services:
             - "443:443"
         volumes:
             - ./project:/project
-            - ./volumes/letsencrypt:/etc/letsencrypt  # Для сертификатов
-            - ./volumes/webroot:/var/www/html  # Для webroot аутентификации
+            - ./volumes/letsencrypt:/etc/letsencrypt:ro  # Для сертификатов
+            - ./volumes/webroot:/project/public  # Для webroot аутентификации
         depends_on:
             - php-fpm
         networks:

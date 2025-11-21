@@ -3,18 +3,17 @@ services:
         image: certbot/certbot:latest
         container_name: ${APP_NAME}-certbot
         volumes:
-            - ./volumes/letsencrypt:/etc/letsencrypt  # Сертификаты
-            - ./volumes/webroot:/var/www/html  # Webroot для аутентификации
+            - ./volumes/letsencrypt:/etc/letsencrypt
+            - ./volumes/webroot:/project/public  # Изменено: теперь монтируем в /project/public
         command: >
             sh -c "
-            # Генерация сертификата (если не существует)
             if [ ! -d /etc/letsencrypt/live/novapc74.twc1.net ]; then
-                certbot certonly --webroot --webroot-path=/var/www/html -d novapc74.twc1.net -d www.novapc74.twc1.net --agree-tos --email novapc74@yandex.ru --non-interactive;
+              certbot certonly --webroot --webroot-path=/project/public  # Изменено: путь теперь /project/public
+              -d novapc74.twc1.net -d www.novapc74.twc1.net
+              --agree-tos --email novapc74@yandex.ru --non-interactive;
             fi;
-            # Настройка cron для автоматического обновления (каждые 12 часов)
-            echo '0 */12 * * * certbot renew --quiet && nginx -s reload' > /etc/crontabs/root;
-            crond -f;
-            "
+            echo '0 */12 * * * certbot renew --quiet && docker exec ${APP_NAME}-nginx-prod nginx -s reload' > /etc/crontabs/root;
+            crond -f"
         networks:
             - tg-bot-network
 
