@@ -1,4 +1,6 @@
 init: create_network docker-down docker-pull docker-build docker-up
+prod: create_network docker-down prod-docker-pull docker-prod-up
+certbot: create_network update-letsencrypt
 
 create_network:
 	@if [ -z "$$(docker network ls --filter name=tg-bot-network -q)" ]; then \
@@ -10,17 +12,29 @@ create_network:
 create_shared_network:
 	docker network create --driver bridge shared-network
 
+update-letsencrypt:
+	docker compose -f docker-compose-LE.yml --env-file ./project/.env.local up -d
+
 docker-down:
 	docker compose --env-file ./project/.env.local down --remove-orphans
 
 docker-pull:
 	docker compose --env-file ./project/.env.local pull
 
+prod-docker-pull:
+	docker compose -f docker-compose-prod.yml --env-flie ./project/.env.local pull
+
 docker-build:
 	docker compose --env-file ./project/.env.local build --pull
 
+prod-docker-build:
+	docker compose -f docker-compose-prod.yml --env-flie ./project/.env.local build --pull
+
 docker-up: create_network
 	docker compose --env-file ./project/.env.local up -d
+
+docker-prod-up:
+	docker compose -f docker-compose-prod.yml --env-flie ./project/.env.local up -d
 
 php-cli:
 	docker compose --env-file ./project/.env.local run --rm php-cli bash
