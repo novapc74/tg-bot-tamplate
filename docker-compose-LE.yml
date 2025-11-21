@@ -5,15 +5,18 @@ services:
         volumes:
             - ./volumes/letsencrypt:/etc/letsencrypt
             - ./volumes/webroot:/project/public  # Изменено: теперь монтируем в /project/public
-        command: >
-            sh -c "
-            if [ ! -d /etc/letsencrypt/live/novapc74.twc1.net ]; then
-              certbot certonly --webroot --webroot-path=/project/public  # Изменено: путь теперь /project/public
-              -d novapc74.twc1.net -d www.novapc74.twc1.net
-              --agree-tos --email novapc74@yandex.ru --non-interactive;
-            fi;
-            echo '0 */12 * * * certbot renew --quiet && docker exec ${APP_NAME}-nginx-prod nginx -s reload' > /etc/crontabs/root;
-            crond -f"
+        command:
+            - sh
+            - -c
+            - |
+                if [ ! -d /etc/letsencrypt/live/novapc74.twc1.net ]; then
+                  certbot certonly --webroot --webroot-path=/project/public \
+                  -d novapc74.twc1.net -d www.novapc74.twc1.net \
+                  --agree-tos --email novapc74@yandex.ru --non-interactive;
+                fi;
+                echo '0 */12 * * * certbot renew --quiet && docker exec tg-bot-template-nginx-prod nginx -s reload' > /etc/crontabs/root;
+                crond -f
+
         networks:
             - tg-bot-network
 
