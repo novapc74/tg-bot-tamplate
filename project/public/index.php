@@ -30,7 +30,7 @@ $app->post('/webhook-endpoint', function (TgRequestInterface $request, array $ur
         #TODO WebhookHandler::init()->handle($data);
     }
 
-    header('Content-Type: text/html; charset=utf-8');
+    header('Content-Type: application/json; charset=utf-8');
     http_response_code(200);
 
     return json_encode(['ok' => true, 'result' => true], JSON_UNESCAPED_UNICODE);
