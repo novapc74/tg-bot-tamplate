@@ -6,7 +6,7 @@ services:
         entrypoint: ""
         volumes:
             - ./volumes/letsencrypt:/etc/letsencrypt
-            - ./project/public/.well-known/acme-challenge/:/var/www/certbot
+            - ./volumes/certbot:/var/www/certbot
         environment:
             - TERM=xterm
         networks:
