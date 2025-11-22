@@ -33,7 +33,7 @@ $app->post('/webhook-endpoint', function (TgRequestInterface $request, array $ur
     header('Content-Type: text/html; charset=utf-8');
     http_response_code(200);
 
-    return json_encode(['ok'], JSON_UNESCAPED_UNICODE);
+    return json_encode(['ok' => true, 'result' => true], JSON_UNESCAPED_UNICODE);
 });
 
 $app->get('/admin/{id}/user/{item}', function (TgRequestInterface $request, array $uriParams) {
