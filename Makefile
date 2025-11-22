@@ -13,7 +13,7 @@ create_shared_network:
 	docker network create --driver bridge shared-network
 
 update-letsencrypt:
-	docker compose -f docker-compose-LE.yml --env-file ./project/.env.local up -d
+	docker compose -f docker-compose-LE.yml --env-file ./project/.env.local run --rm certbot
 
 docker-down:
 	docker compose --env-file ./project/.env.local down --remove-orphans

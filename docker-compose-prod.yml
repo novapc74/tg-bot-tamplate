@@ -7,7 +7,8 @@ services:
             - "80:80"
             - "443:443"
         volumes:
-            - ./project:/project
+            - ./project:/var/www/html
+#            - ./project:/project
             - ./volumes/letsencrypt:/etc/letsencrypt
         depends_on:
             - php-fpm
@@ -20,7 +21,7 @@ services:
         ports:
             - "9000:9000"
         volumes:
-            - ./project:/project
+            - ./project:/var/www/html
         networks:
             - tg-bot-network
 
@@ -28,7 +29,7 @@ services:
         image: ghcr.io/novapc74/repository/tg_php-cli:master
         container_name: ${APP_NAME}-php-cli-prod
         volumes:
-            - ./project:/project
+            - ./project:/var/www/html
         networks:
             - tg-bot-network
 
