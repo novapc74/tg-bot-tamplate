@@ -9,6 +9,7 @@ services:
         volumes:
             - ./project:/project
             - ./certbot:/var/www/certbot_container_path
+            - ./conf:/etc/letsencrypt
         depends_on:
             - php-fpm
         networks:
