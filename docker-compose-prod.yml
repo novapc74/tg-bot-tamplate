@@ -7,8 +7,7 @@ services:
             - "80:80"
             - "443:443"
         volumes:
-            - ./project:/var/www/html  # Монтируем public как корень
-            - ./project/public/build:/var/www/html/public/build  # Монтируем build как поддиректорию (для стилей /build/css)
+            - ./project:/var/www/html
             - ./volumes/letsencrypt:/etc/letsencrypt
         depends_on:
             - php-fpm
