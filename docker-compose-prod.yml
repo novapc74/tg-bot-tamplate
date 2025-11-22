@@ -8,8 +8,7 @@ services:
             - "443:443"
         volumes:
             - ./project:/project
-            - ./volumes/letsencrypt:/etc/letsencrypt:ro
-            - ./volumes/certbot:/var/www/certbot:ro
+            - ./certbot:/var/www/certbot_container_path
         depends_on:
             - php-fpm
         networks:
@@ -32,23 +31,6 @@ services:
             - ./project:/project
         networks:
             - tg-bot-network
-
-#    maria-db:
-#        restart: always
-#        image: mariadb:11.8.2
-#        container_name: ${APP_NAME}-maria-db-prod
-#        volumes:
-#            - ./volumes/database/mysql:/var/lib/mysql
-#        ports:
-#            - "3323:3306"
-#        command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
-#        environment:
-#            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-#            - MYSQL_USER=${MYSQL_USER}
-#            - MYSQL_DATABASE=${MYSQL_DATABASE}
-#            - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
-#        networks:
-#            - tg-bot-network
 
 networks:
     tg-bot-network:
