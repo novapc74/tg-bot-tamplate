@@ -5,8 +5,9 @@ services:
         command: sh -c "certbot certonly --webroot --webroot-path=/var/www/certbot -d novapc74.twc1.net -d www.novapc74.twc1.net --agree-tos --email novapc74@yandex.ru --non-interactive --server https://acme-v02.api.letsencrypt.org/directory --rsa-key-size 4096 --verbose --keep-until-expiring"
         entrypoint: ""
         volumes:
-            - ./volumes/letsencrypt:/etc/letsencrypt
-            - ./volumes/certbot:/var/www/certbot
+            - ./volumes/letsencrypt:/etc/letsencrypt:rw
+            - ./volumes/certbot:/var/www/certbot:rw
+            - ./project/public/.well-known/acme-challenge/:/var/www/certbot:rw
         environment:
             - TERM=xterm
         networks:

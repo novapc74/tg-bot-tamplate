@@ -8,8 +8,8 @@ services:
             - "443:443"
         volumes:
             - ./project:/project
-            - ./volumes/letsencrypt:/etc/letsencrypt
-            - ./volumes/certbot:/var/www/certbot
+            - ./volumes/letsencrypt:/etc/letsencrypt:ro
+            - ./volumes/certbot:/var/www/certbot:ro
         depends_on:
             - php-fpm
         networks:
