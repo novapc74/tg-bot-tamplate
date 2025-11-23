@@ -3,6 +3,7 @@
 namespace App\Handlers\CommandHandlers;
 
 use App\Handlers\AbstractTelegramBotHandler;
+use App\Handlers\PayloadMessageInterface;
 use App\Services\HttpClient\Dto\SendMessageDto;
 
 final readonly class UpdatePromptCommandHandler extends AbstractTelegramBotHandler
@@ -10,14 +11,14 @@ final readonly class UpdatePromptCommandHandler extends AbstractTelegramBotHandl
     const string COMMAND_NAME = '#update_prompt#';
     private const string PROMPT_FILE_NAME = 'prompt.json';
 
-    public function handle(array $data): void
+    public function handle(PayloadMessageInterface $dto): void
     {
-        if (!$chatId = $data['message']['chat']['id'] ?? null) {
+        if (!$chatId = $dto->getChatId()) {
             $this->logger->error('Не установлен ID чата. Прерываем.');
             return;
         }
 
-        if (!$message = $data['message']['text'] ?? null) {
+        if (!$message = $dto->getText()) {
             $this->logger->error('Не передано сообщение. Прерываем.');
             return;
         }
