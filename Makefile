@@ -67,7 +67,7 @@ image-docker-push:
 	docker push ghcr.io/novapc74/repository/tg_php-fpm:master
 
 certbot:
-	certbot renew --config-dir /var/www/tg-bot/conf
+	sudo certbot renew --config-dir /var/www/tg-bot/conf
 
 reload-nginx:
 	docker compose -f docker-compose-prod.yml --env-file ./project/.env.local exec nginx nginx -s stop
