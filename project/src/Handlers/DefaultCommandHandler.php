@@ -20,15 +20,15 @@ final readonly class DefaultCommandHandler extends AbstractTelegramBotHandler
         parent::__construct($client, $logger);
     }
 
-    public function handle(array $data): void
+    public function handle(PayloadMessageInterface $dto): void
     {
-        if (!$chatId = $data['message']['chat']['id'] ?? null) {
-            $this->logger->error('Не установлен ID чата. Прерываем. ' . json_encode($data, JSON_UNESCAPED_UNICODE));
+        if (!$chatId = $dto->getChatId()) {
+            $this->logger->error('Не установлен ID чата. Прерываем.');
             return;
         }
 
-        if (!$userMessage = $data['message']['text'] ?? null) {
-            $this->logger->error('пользователь не передал текст в сообщении. Прерываем. ' . json_encode($data, JSON_UNESCAPED_UNICODE));
+        if (!$userMessage = $dto->getText()) {
+            $this->logger->error('пользователь не передал текст в сообщении. Прерываем.');
             return;
         }
 
@@ -36,28 +36,43 @@ final readonly class DefaultCommandHandler extends AbstractTelegramBotHandler
             return;
         }
 
+        $content = 'Пока не отправляем запросы в нейронку, нгастраиваем prompt';
+//        if(!$content = $this->getOpenRouterResult($userMessage)) {
+//            $this->logger->error('Нейронка вернула пустой отввет');
+//            $this->tgClient->request(
+//                SendMessageDto::init($chatId, trim('Ошибка, пустой ответ на запрос. Возможно, исчерпан лимит бесплатных запросов.'))
+//            );
+//            return;
+//        }
+
+        $this->tgClient->request(
+            SendMessageDto::init($chatId, $content)
+        );
+    }
+
+    private function getOpenRouterResult(string $userMessage): ?string
+    {
         $response = $this->client->request(
             OpenRouterCompletionsDto::init($userMessage)
         );
 
         if ($response === null) {
-            $this->logger->error('Нейронка вернула пустой отввет');
-            $this->tgClient->request(
-                SendMessageDto::init($chatId, trim('Ошибка, пустой ответ на запрос. Возможно, исчерпан лимит бесплатных запросов.'))
-            );
-            return;
+            return null;
         }
 
         $data = OpenRouterResponseDto::init($response);
 
-        $content = str_replace(['<s>', 'OUT', '/OUT'], '', $data->getContent() ?? 'Пустой ответ, попробуйте снова.');
-
-        if (empty($content)) {
-            $content = 'Не удалось ответить на ваш вопрос, попробуйте еще раз.';
-        }
-
-        $this->tgClient->request(
-            SendMessageDto::init($chatId, trim($content))
+        $content = $this->sanitizeOpenRouterResponseContent(
+            $data->getContent() ?? 'Пустой ответ, попробуйте снова.'
         );
+
+        return trim($content);
+    }
+
+    private function sanitizeOpenRouterResponseContent(string $content): string
+    {
+        $content = str_replace(['<s>', 'OUT', '/OUT'], '', $content);
+
+        return trim($content);
     }
 }

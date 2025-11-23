@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 use App\App;
+use App\Handlers\PayloadDto;
+use App\Handlers\WebhookHandler;
 use App\Views\View;
 use Psr\Log\LoggerInterface;
 use App\Services\Request\TgRequestInterface;
@@ -27,7 +29,7 @@ $app = $container->get(App::class);
 
 $app->post('/webhook-endpoint', function (TgRequestInterface $request, array $uriParams) use ($container) {
     /** @var LoggerInterface $logger */
-    $logger = $container->get('webhook');
+    $logger = $container->get('webhook-endpoint');
     $token = $container->get('telegram-webhook-token');
     header('Content-Type: application/json; charset=utf-8');
     http_response_code(200);
@@ -51,7 +53,10 @@ $app->post('/webhook-endpoint', function (TgRequestInterface $request, array $ur
     }
 
     $logger->info(json_encode($body, JSON_UNESCAPED_UNICODE));
-    #TODO WebhookHandler::init()->handle($data);
+
+    /** @var WebhookHandler $webhookHandler*/
+    $webhookHandler = $container->get(WebhookHandler::class);
+    $webhookHandler->handle(PayloadDto::init($body));
 
     return json_encode(['ok' => true]);
 });

@@ -3,16 +3,18 @@
 namespace App\Handlers\CommandHandlers;
 
 use App\Handlers\AbstractTelegramBotHandler;
+use App\Handlers\PayloadMessageInterface;
 use App\Services\HttpClient\Dto\SendMessageDto;
 
 final readonly class StartCommandHandler extends AbstractTelegramBotHandler
 {
     const string COMMAND_NAME = '/start';
     private const string START_MESSAGE = 'Приветствуем в нашем чате! Для получения инструкции введите "/help"';
-    public function handle(array $data): void
+
+    public function handle(PayloadMessageInterface $dto): void
     {
-        if(!$chatId = $data['message']['chat']['id'] ?? null) {
-            $this->logger->error('Не установлен ID чата. Прерываем.' . json_encode($data));
+        if (!$chatId = $dto->getChatId()) {
+            $this->logger->error('Не установлен ID чата. Прерываем.');
             return;
         }
 

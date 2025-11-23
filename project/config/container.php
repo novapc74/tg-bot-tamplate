@@ -4,6 +4,7 @@ use App\App;
 use Monolog\Level;
 use Monolog\Logger;
 use DI\ContainerBuilder;
+use App\Handlers\WebhookHandler;
 use App\Services\Request\Request;
 use Psr\Container\ContainerInterface;
 use App\Handlers\DefaultCommandHandler;
@@ -52,10 +53,20 @@ return function () {
             return $_ENV['OPEN_ROUTER_TOKEN'] ?? throw new Exception('OPEN_ROUTER_TOKEN not set');
         },
 
-        'webhook' => function () {
-            $logger = new Logger('webhook');
+        'webhook-endpoint' => function () {
+            $logger = new Logger('webhook-endpoint');
             $logger->pushHandler(
-                new RotatingFileHandler(__DIR__ . '/../var/log/webhook/webhook.log',
+                new RotatingFileHandler(__DIR__ . '/../var/log/webhook-endpoint/webhook-endpoint.log',
+                    10,
+                    Level::Debug
+                ));
+            return $logger;
+        },
+
+        'webhook-handler' => function () {
+            $logger = new Logger('webhook-handler');
+            $logger->pushHandler(
+                new RotatingFileHandler(__DIR__ . '/../var/log/webhook-handler/webhook-handler.log',
                     10,
                     Level::Debug
                 ));
@@ -206,7 +217,13 @@ return function () {
                 $container->get('app-logger'),
                 $container->get(Request::class),
             );
-        }
+        },
+
+        WebhookHandler::class => function (ContainerInterface $container) {
+            return new WebhookHandler(
+                $container->get('webhook-handler'),
+            );
+        },
     ];
 
     return (new ContainerBuilder())

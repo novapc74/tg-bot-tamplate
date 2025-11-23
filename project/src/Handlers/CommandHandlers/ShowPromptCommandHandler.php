@@ -3,16 +3,17 @@
 namespace App\Handlers\CommandHandlers;
 
 use App\Handlers\AbstractTelegramBotHandler;
+use App\Handlers\PayloadMessageInterface;
 use App\Services\HttpClient\Dto\SendMessageDto;
 
 final readonly class ShowPromptCommandHandler extends AbstractTelegramBotHandler
 {
     const string COMMAND_NAME = '/prompt';
 
-    public function handle(array $data): void
+    public function handle(PayloadMessageInterface $dto): void
     {
-        if (!$chatId = $data['message']['chat']['id'] ?? null) {
-            $this->logger->error('Не установлен ID чата. Прерываем. тело ответа' . json_encode($data, JSON_UNESCAPED_UNICODE));
+        if (!$chatId = $dto->getChatId()) {
+            $this->logger->error('Не установлен ID чата. Прерываем. тело ответа');
             return;
         }
 
