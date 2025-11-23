@@ -16,13 +16,16 @@ final readonly class WebhookHandler
 
     public function handle(PayloadMessageInterface $dto): void
     {
-        $handler = match ($dto->getText()) {
+        $text = $dto->getText();
+        $handler = match ($text) {
             HelpCommandHandler::COMMAND_NAME => HelpCommandHandler::class,
             ShowPromptCommandHandler::COMMAND_NAME => ShowPromptCommandHandler::class,
             StartCommandHandler::COMMAND_NAME => StartCommandHandler::class,
             ReportCommandHandler::COMMAND_NAME => ReportCommandHandler::class,
             default => DefaultCommandHandler::class
         };
+
+        $this->logger->info(sprintf('Handler received: %s, text: %s', $handler, $text));
 
         $handler->handle($dto);
 
