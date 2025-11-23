@@ -50,7 +50,7 @@ $app->post('/webhook-endpoint', function (TgRequestInterface $request, array $ur
         return json_encode(['ok' => false]);
     }
 
-    $logger->info(json_encode($body, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    $logger->info(json_encode($body, JSON_UNESCAPED_UNICODE));
     #TODO WebhookHandler::init()->handle($data);
 
     return json_encode(['ok' => true]);
