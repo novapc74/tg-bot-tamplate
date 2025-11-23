@@ -1,6 +1,6 @@
 init: create_network docker-down docker-pull docker-build docker-up
 prod: create_network docker-down prod-docker-pull docker-prod-up
-certbot: create_network update-letsencrypt
+update_certificates: certbot reload-nginx
 
 create_network:
 	@if [ -z "$$(docker network ls --filter name=tg-bot-network -q)" ]; then \
@@ -11,9 +11,6 @@ create_network:
 
 create_shared_network:
 	docker network create --driver bridge shared-network
-
-update-letsencrypt:
-	docker compose -f docker-compose-LE.yml --env-file ./project/.env.local run --rm certbot
 
 docker-down:
 	docker compose --env-file ./project/.env.local down --remove-orphans
@@ -68,3 +65,9 @@ image-docker-push:
 	docker push ghcr.io/novapc74/repository/tg_nginx:master
 	docker push ghcr.io/novapc74/repository/tg_php-cli:master
 	docker push ghcr.io/novapc74/repository/tg_php-fpm:master
+
+certbot:
+	certbot renew --quiet --config-dir /var/www/tg-bot/conf
+
+reload-nginx:
+	docker compose exec nginx nginx -s reload
