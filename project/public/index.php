@@ -24,8 +24,22 @@ global $container;
 /** @var App $app */
 $app = $container->get(App::class);
 
-$app->post('/webhook-endpoint', function (TgRequestInterface $request, array $uriParams) {
+$app->post('/webhook-endpoint', function (TgRequestInterface $request, array $uriParams) use ($container) {
 
+    $token = $container->get('telegram-webhook-token');
+    $authToken = getallheaders()['X-Telegram-Bot-Api-Secret-Token'] ?? null;
+
+    if ($token !== $authToken) {
+        http_response_code(200);
+        return json_encode([
+            'ok' => false,
+            'result' => [
+                'authToken' => $authToken
+            ]
+        ]);
+    }
+
+    #TODO check => X-Telegram-Bot-Api-Secret-Token
     if ($data = $request->getPayload()) {
         #TODO WebhookHandler::init()->handle($data);
     }

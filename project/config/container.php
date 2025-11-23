@@ -32,6 +32,10 @@ return function () {
             return $logger;
         },
 
+        'telegram-webhook-token' => function () {
+            return $_ENV['TELEGRAM_WEBHOOK_TOKEN'] ?? throw new Exception('TELEGRAM_WEBHOOK_TOKEN not set');
+        },
+
         'telegram-bot-url' => function () {
             return $_ENV['TELEGRAM_BOT_URL'] ?? throw new Exception('TELEGRAM_BOT_URL not set');
         },
