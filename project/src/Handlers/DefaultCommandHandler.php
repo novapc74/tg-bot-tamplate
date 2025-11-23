@@ -36,10 +36,13 @@ final readonly class DefaultCommandHandler extends AbstractTelegramBotHandler
             return;
         }
 
-        $content = sprintf(
-            'Пока не отправляем запросы в нейронку, настраиваем prompt. Вы отправили сообщение: ```%s```',
-            $userMessage
-        );
+        $content = <<<EOT
+Пока не отправляем запросы в нейронку, настраиваем prompt.
+Вы отправили сообщение:
+ ```
+ $userMessage
+ ```
+EOT;
 
         $options = [
             'parse_mode' => 'MarkdownV2',
