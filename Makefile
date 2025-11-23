@@ -70,4 +70,4 @@ certbot:
 	certbot renew --quiet --config-dir /var/www/tg-bot/conf
 
 reload-nginx:
-	docker compose exec nginx nginx -s reload
+	docker compose --env-file ./project/.env.local exec nginx nginx -s reload
