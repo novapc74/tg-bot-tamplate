@@ -34,9 +34,7 @@ final readonly class ReportCommandHandler extends AbstractTelegramBotHandler
     private function makeReport(): string
     {
         return <<<EOT
-Ждем *креды* для нейронки от заказчика, тогда и будет отчет\.
-![👍](tg://emoji?id=5368324170671202286)
+Настроим промпт, будет результат\.![👍](tg://emoji?id=5368324170671202286)
 EOT;
-
     }
 }
