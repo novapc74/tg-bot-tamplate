@@ -52,6 +52,16 @@ return function () {
             return $_ENV['OPEN_ROUTER_TOKEN'] ?? throw new Exception('OPEN_ROUTER_TOKEN not set');
         },
 
+        'webhook' => function () {
+            $logger = new Logger('webhook');
+            $logger->pushHandler(
+                new RotatingFileHandler(__DIR__ . '/../var/log/webhook/webhook.log',
+                    10,
+                    Level::Debug
+                ));
+            return $logger;
+        },
+
         'telegram-client' => function () {
             $logger = new Logger('telegram-client');
             $logger->pushHandler(

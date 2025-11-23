@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use App\App;
 use App\Views\View;
+use Psr\Log\LoggerInterface;
 use App\Services\Request\TgRequestInterface;
 use App\Services\Request\UploadFileInterface;
 
@@ -25,11 +26,18 @@ global $container;
 $app = $container->get(App::class);
 
 $app->post('/webhook-endpoint', function (TgRequestInterface $request, array $uriParams) use ($container) {
+    /** @var LoggerInterface $logger */
+    $logger = $container->get('webhook');
+
 
     $token = $container->get('telegram-webhook-token');
     $authToken = getallheaders()['X-Telegram-Bot-Api-Secret-Token'] ?? null;
 
     if ($token !== $authToken) {
+
+        $message = sprintf('Unprocessable token %s, payload: %s', $authToken, $request->getPayload());
+        $logger->error($message);
+
         http_response_code(200);
         return json_encode([
             'ok' => false,
@@ -39,9 +47,11 @@ $app->post('/webhook-endpoint', function (TgRequestInterface $request, array $ur
         ]);
     }
 
-    #TODO check => X-Telegram-Bot-Api-Secret-Token
     if ($data = $request->getPayload()) {
+        $logger->info(json_encode($data));
         #TODO WebhookHandler::init()->handle($data);
+    } else {
+        $logger->error('Webhook endpoint missing payload');
     }
 
     http_response_code(200);
