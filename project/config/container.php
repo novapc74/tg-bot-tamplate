@@ -222,6 +222,7 @@ return function () {
         WebhookHandler::class => function (ContainerInterface $container) {
             return new WebhookHandler(
                 $container->get('webhook-handler'),
+                $container,
             );
         },
     ];
