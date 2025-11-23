@@ -28,36 +28,32 @@ $app = $container->get(App::class);
 $app->post('/webhook-endpoint', function (TgRequestInterface $request, array $uriParams) use ($container) {
     /** @var LoggerInterface $logger */
     $logger = $container->get('webhook');
-
-
     $token = $container->get('telegram-webhook-token');
-    $authToken = getallheaders()['X-Telegram-Bot-Api-Secret-Token'] ?? null;
-
-    if ($token !== $authToken) {
-
-        $message = sprintf('Unprocessable token %s, payload: %s', $authToken, $request->getPayload());
-        $logger->error($message);
-
-        http_response_code(200);
-        return json_encode([
-            'ok' => false,
-            'result' => [
-                'authToken' => $authToken
-            ]
-        ]);
-    }
-
-    if ($data = $request->getPayload()) {
-        $logger->info(json_encode($data));
-        #TODO WebhookHandler::init()->handle($data);
-    } else {
-        $logger->error('Webhook endpoint missing payload');
-    }
-
-    http_response_code(200);
     header('Content-Type: application/json; charset=utf-8');
+    http_response_code(200);
 
-    return json_encode(['ok' => true, 'result' => true]);
+    /** check webhook token */
+    if (!$authToken = getallheaders()['X-Telegram-Bot-Api-Secret-Token'] ?? null) {
+        $logger->error('No authorization token provided.');
+        return json_encode(['ok' => false]);
+    }
+
+    /** check is body empty */
+    if (!$body = $request->getPayload()) {
+        $logger->error('Webhook endpoint missing payload');
+        return json_encode(['ok' => false]);
+    }
+
+    /** validate authorization token */
+    if ($token !== $authToken) {
+        $logger->error(sprintf('Unprocessable token %s, payload: %s', $authToken, $request->getPayload()));
+        return json_encode(['ok' => false]);
+    }
+
+    $logger->info(json_encode($body, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    #TODO WebhookHandler::init()->handle($data);
+
+    return json_encode(['ok' => true]);
 });
 
 $app->get('/admin/{id}/user/{item}', function (TgRequestInterface $request, array $uriParams) {
