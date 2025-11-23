@@ -17,3 +17,6 @@
         "type": "default"
     }
 }
+/help - Справка.
+/report - Сгенерировать отчет.
+/prompt - Показать prompt.
