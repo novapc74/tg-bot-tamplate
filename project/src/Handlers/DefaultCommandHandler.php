@@ -37,7 +37,7 @@ final readonly class DefaultCommandHandler extends AbstractTelegramBotHandler
         }
 
         $content = <<<EOT
-Пока не отправляем запросы в нейронку, настраиваем prompt.
+Пока не отправляем запросы в нейронку, настраиваем prompt\.
 Вы отправили сообщение:
  ```
  $userMessage
