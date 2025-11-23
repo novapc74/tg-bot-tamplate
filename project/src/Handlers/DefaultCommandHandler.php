@@ -37,9 +37,14 @@ final readonly class DefaultCommandHandler extends AbstractTelegramBotHandler
         }
 
         $content = sprintf(
-            'Пока не отправляем запросы в нейронку, настраиваем prompt. Вы отправилисообщение %s',
+            'Пока не отправляем запросы в нейронку, настраиваем prompt. Вы отправили сообщение: ```%s```',
             $userMessage
         );
+
+        $options = [
+            'parse_mode' => 'MarkdownV2',
+        ];
+
 //        if(!$content = $this->getOpenRouterResult($userMessage)) {
 //            $this->logger->error('Нейронка вернула пустой отввет');
 //            $this->tgClient->request(
@@ -49,7 +54,7 @@ final readonly class DefaultCommandHandler extends AbstractTelegramBotHandler
 //        }
 
         $this->tgClient->request(
-            SendMessageDto::init($chatId, $content)
+            SendMessageDto::init($chatId, $content, $options)
         );
     }
 
