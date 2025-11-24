@@ -2,10 +2,11 @@
 
 namespace App;
 
-use App\Middleware\AuthMiddleware;
-use App\Views\View;
+use Exception;
 use Throwable;
+use App\Views\View;
 use Psr\Log\LoggerInterface;
+use App\Middleware\AuthMiddleware;
 use App\Services\Request\TgRequestInterface;
 
 final class App
@@ -34,23 +35,13 @@ final class App
         $this->append('POST', $route, $callback);
     }
 
-    public function put(string $route, callable $callback): void
-    {
-        $this->append('PUT', $route, $callback);
-    }
-
-    public function delete(string $route, callable $callback): void
-    {
-        $this->append('DELETE', $route, $callback);
-    }
-
     private function append(string $method, string $route, callable $callback): void
     {
         $this->handlers[] = [$method, $route, $callback];
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function run(): void
     {
@@ -77,7 +68,14 @@ final class App
                 } catch (Throwable $e) {
                     http_response_code(500);
                     $this->logger->error(sprintf('Callback error: %s', $e->getMessage()));
-                    echo json_encode(['error' => 'Internal Server Error']);
+
+                    echo (new View())
+                        ->render('pages/error/_404.php', [
+                            'error' => 'Internal Server Error',
+                            'meta_title' => 'Page 500',
+                            'code' => '500',
+                        ]);
+
                     exit(1);
                 }
             }

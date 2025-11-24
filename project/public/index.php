@@ -30,12 +30,12 @@ $app = $container->get(App::class);
 
 $app->middleware();
 
-$app->get('/', function (TgRequestInterface $request, array $uriParams) {
+$app->get('/', function () {
     header('Location: admin');
     exit();
 });
 
-$app->post('/webhook-endpoint', function (TgRequestInterface $request, array $uriParams) use ($container) {
+$app->post('/webhook-endpoint', function (TgRequestInterface $request) use ($container) {
     header('Content-Type: application/json; charset=utf-8');
 
     /** @var LoggerInterface $logger */
@@ -71,7 +71,7 @@ $app->post('/webhook-endpoint', function (TgRequestInterface $request, array $ur
     return json_encode(['ok' => true]);
 });
 
-$app->get('/login', function (TgRequestInterface $request, array $uriParams) use ($container) {
+$app->get('/login', function () use ($container) {
     header('Content-Type: text/html; charset=utf-8');
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
@@ -82,11 +82,11 @@ $app->get('/login', function (TgRequestInterface $request, array $uriParams) use
         ]);
 });
 
-$app->get('/logout', function (TgRequestInterface $request, array $uriParams) {
+$app->get('/logout', function (TgRequestInterface $request) {
     $request->logout();
 });
 
-$app->post('/auth', function (TgRequestInterface $request, array $uriParams) {
+$app->post('/auth', function (TgRequestInterface $request) {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         die('Обнаружена CSRF атака!');
     }
@@ -104,7 +104,7 @@ $app->post('/auth', function (TgRequestInterface $request, array $uriParams) {
 });
 
 
-$app->get('/admin', function (TgRequestInterface $request, array $uriParams) {
+$app->get('/admin', function () {
 
     $message = $_SESSION['FLASH'] ?? null;
     $_SESSION['FLASH'] = false;
@@ -116,7 +116,7 @@ $app->get('/admin', function (TgRequestInterface $request, array $uriParams) {
         ]);
 });
 
-$app->get('/admin/prompt/create', function (TgRequestInterface $request, array $uriParams) {
+$app->get('/admin/prompt/create', function () {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
     return (new View())
@@ -126,7 +126,7 @@ $app->get('/admin/prompt/create', function (TgRequestInterface $request, array $
         ]);
 });
 
-$app->post('/admin/prompt/upload', function (TgRequestInterface $request, array $uriParams) {
+$app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
 
         http_response_code(403);
@@ -207,7 +207,7 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request, array 
 try {
     $app->run();
 } catch (Exception $e) {
-    #TODO добавить в логер...
     exit(1);
 }
+
 
