@@ -116,14 +116,15 @@ $app->get('/admin', function () {
         ]);
 });
 
-$app->get('/admin/prompt/create', function () {
+$app->get('/admin/help/create', function (TgRequestInterface $request) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
     return (new View())
-        ->render('pages/prompt/_upload.php', [
+        ->render('pages/help/_upload.php', [
             'csrf_token' => $_SESSION['csrf_token'],
-            'meta_title' => 'Upload prompt',
+            'meta_title' => 'Upload history',
         ]);
+
 });
 
 $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
@@ -190,6 +191,96 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
 
     $targetPath = $fileDir . 'prompt.json';
     if (file_put_contents($targetPath, $fileContent)) {
+        header('Location: /admin');
+        $_SESSION['FLASH'] = 'Файл успешно сохранен на сервере.';
+        exit();
+    }
+
+    http_response_code(422);
+    return (new View())
+        ->render('pages/error/_404.php', [
+            'code' => 400,
+            'error' => 'Ошибка записи файла на сервер: ' . $file->name(),
+            'meta_title' => 'Error page',
+        ]);
+});
+
+
+$app->get('/admin/prompt/create', function () {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+    return (new View())
+        ->render('pages/prompt/_upload.php', [
+            'csrf_token' => $_SESSION['csrf_token'],
+            'meta_title' => 'Upload prompt',
+        ]);
+});
+
+$app->post('/admin/help/upload', function (TgRequestInterface $request) {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+
+        http_response_code(403);
+        return (new View())
+            ->render('pages/error/_404.php', [
+                'code' => 403,
+                'error' => 'Обнаружена CSRF атака!'
+            ]);
+    }
+
+    /** refresh token */
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+    /** @var UploadFileInterface $file */
+    if (!$file = $request->getFiles()[0] ?? null) {
+        http_response_code(400);
+        return (new View())
+            ->render('pages/error/_404.php', [
+                'code' => 400,
+                'error' => 'Файл не загрузился.',
+                'meta_title' => 'Error page',
+            ]);
+    }
+
+    $fileDir = __DIR__ . '/../storage/telegram/';
+
+    if (!is_dir($fileDir)) {
+        mkdir($fileDir, 0755, true);
+    }
+
+    if ($file->error() !== UPLOAD_ERR_OK) {
+        http_response_code(422);
+        return (new View())
+            ->render('pages/error/_404.php', [
+                'code' => 400,
+                'error' => 'Ошибка загрузки файла: ' . $file->name(),
+                'meta_title' => 'Error page',
+            ]);
+    }
+
+    if ($file->size() > 2 * 1024 * 1024) {  // 2MB
+        http_response_code(422);
+        return (new View())
+            ->render('pages/error/_404.php', [
+                'code' => 400,
+                'error' => 'Файл слишком большой:' . $file->name(),
+                'meta_title' => 'Error page',
+            ]);
+    }
+
+    $fileExtension = pathinfo($file->name())['extension'] ?? '';
+
+    if ('md' !== strtolower($fileExtension)) {
+        http_response_code(422);
+        return (new View())
+            ->render('pages/error/_404.php', [
+                'code' => 400,
+                'error' => 'Файл с недопустимым расширением:' . $file->name(),
+                'meta_title' => 'Error page',
+            ]);
+    }
+
+    $fileContent = file_get_contents($file->tmp_name());
+    if (file_put_contents($fileDir . 'help_command.md', $fileContent)) {
         header('Location: /admin');
         $_SESSION['FLASH'] = 'Файл успешно сохранен на сервере.';
         exit();

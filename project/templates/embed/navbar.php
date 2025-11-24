@@ -18,8 +18,7 @@
                     <a href="#" class="my-nav-link dropdown-toggle">Upload <span class="dropdown-arrow">▼</span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/admin/prompt/create" class="dropdown-link first">Prompt</a></li>
-                        <li><a href="#" class="dropdown-link">Help</a></li>
-                        <li><a href="#" class="dropdown-link last">Commands</a></li>
+                        <li><a href="/admin/help/create" class="dropdown-link">Help</a></li>
                     </ul>
                 </li>
                 <li class="my-nav-item">
