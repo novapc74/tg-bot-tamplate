@@ -1,7 +1,6 @@
 {% extends 'base.php' %}
 
 {% block body %}
-
 <section class="upload-prompt">
     <h1>Upload Help File</h1>
     <form action="/admin/help/upload" method="POST" enctype="multipart/form-data">
@@ -14,5 +13,4 @@
     </form>
     <div class="form-sub-menu"><a href="/admin/help/show">Refresh</a> | <a href="/admin/help/download">Download current help</a></div>
 </section>
-
 {% end block %}

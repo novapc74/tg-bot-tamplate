@@ -28,7 +28,10 @@ global $container;
 /** @var App $app */
 $app = $container->get(App::class);
 
-$app->middleware();
+try {
+    $app->middleware();
+} catch (Exception $e) {
+}
 
 $app->get('/', function () {
     header('Location: admin');
@@ -103,9 +106,7 @@ $app->post('/auth', function (TgRequestInterface $request) {
     exit();
 });
 
-
 $app->get('/admin', function () {
-
     $message = $_SESSION['FLASH'] ?? null;
     $_SESSION['FLASH'] = false;
 
@@ -116,31 +117,15 @@ $app->get('/admin', function () {
         ]);
 });
 
-$app->get('/admin/help/create', function (TgRequestInterface $request) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-
+$app->get('/admin/help/create', function () {
     return (new View())
         ->render('pages/help/_upload.php', [
             'csrf_token' => $_SESSION['csrf_token'],
             'meta_title' => 'Upload history',
         ]);
-
 });
 
 $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-
-        http_response_code(403);
-        return (new View())
-            ->render('pages/error/_404.php', [
-                'code' => 403,
-                'error' => 'Обнаружена CSRF атака!'
-            ]);
-    }
-
-    /** refresh token */
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-
     /** @var UploadFileInterface $file */
     if (!$file = $request->getFiles()[0] ?? null) {
         http_response_code(400);
@@ -216,20 +201,95 @@ $app->get('/admin/prompt/create', function () {
         ]);
 });
 
-$app->post('/admin/help/upload', function (TgRequestInterface $request) {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+$app->get('/admin/prompt/show', function () {
+    $file = __DIR__ . '/../storage/telegram/prompt.json';
 
-        http_response_code(403);
+    if (is_file($file)) {
+        $content = file_get_contents($file);
+
         return (new View())
-            ->render('pages/error/_404.php', [
-                'code' => 403,
-                'error' => 'Обнаружена CSRF атака!'
+            ->render('pages/prompt/_show.php', [
+                'file_content' => $content
             ]);
     }
 
-    /** refresh token */
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    return (new View())
+        ->render('pages/error/_404.php', [
+            'code' => '422',
+            'meta_title' => 'Error page',
+            'error' => 'Файл "prompt" не найден.'
+        ]);
+});
 
+$app->get('/admin/prompt/download', function () {
+    $file = __DIR__ . '/../storage/telegram/prompt.json';
+
+    if (is_file($file)) {
+        header('Content-Type: application/json');
+        header('Content-Disposition: attachment; filename="prompt.json"');
+        header('Content-Length: ' . filesize($file));
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+
+        ob_clean();
+        flush();
+
+        return readfile($file);
+    }
+
+    return (new View())
+        ->render('pages/error/_404.php', [
+            'code' => '422',
+            'meta_title' => 'Error page',
+            'error' => 'Файл "prompt.json" не найден.'
+        ]);
+});
+
+$app->get('/admin/help/download', function () {
+    $file = __DIR__ . '/../storage/telegram/help_command.md';
+
+    if (is_file($file)) {
+        header('Content-Type: application/json');
+        header('Content-Disposition: attachment; filename="help_command.md"');
+        header('Content-Length: ' . filesize($file));
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+
+        ob_clean();
+        flush();
+
+        return readfile($file);
+    }
+
+    return (new View())
+        ->render('pages/error/_404.php', [
+            'code' => '422',
+            'meta_title' => 'Error page',
+            'error' => 'Файл "help_command.md" не найден.'
+        ]);
+});
+
+$app->get('/admin/help/show', function () {
+    $file = __DIR__ . '/../storage/telegram/help_command.md';
+
+    if (is_file($file)) {
+        $content = file_get_contents($file);
+
+        return (new View())
+            ->render('pages/help/_show.php', [
+                'file_content' => $content
+            ]);
+    }
+
+    return (new View())
+        ->render('pages/error/_404.php', [
+            'code' => '422',
+            'meta_title' => 'Error page',
+            'error' => 'Файл "help" не найден.'
+        ]);
+});
+
+$app->post('/admin/help/upload', function (TgRequestInterface $request) {
     /** @var UploadFileInterface $file */
     if (!$file = $request->getFiles()[0] ?? null) {
         http_response_code(400);

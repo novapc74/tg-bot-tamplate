@@ -11,8 +11,15 @@
         <!-- Меню -->
         <div class="my-navbar-menu">
             <ul class="my-navbar-nav">
-                <li class="my-nav-item">
-                    <a href="#" class="my-nav-link active">About</a>
+<!--                <li class="my-nav-item">-->
+<!--                    <a href="#" class="my-nav-link active">About</a>-->
+<!--                </li>-->
+                <li class="my-nav-item dropdown">
+                    <a href="#" class="my-nav-link dropdown-toggle">Show <span class="dropdown-arrow">▼</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/admin/prompt/show" class="dropdown-link first">Prompt</a></li>
+                        <li><a href="/admin/help/show" class="dropdown-link">Help</a></li>
+                    </ul>
                 </li>
                 <li class="my-nav-item dropdown">
                     <a href="#" class="my-nav-link dropdown-toggle">Upload <span class="dropdown-arrow">▼</span></a>
@@ -21,8 +28,12 @@
                         <li><a href="/admin/help/create" class="dropdown-link">Help</a></li>
                     </ul>
                 </li>
-                <li class="my-nav-item">
-                    <a href="#" class="my-nav-link">Contact</a>
+                <li class="my-nav-item dropdown">
+                    <a href="#" class="my-nav-link dropdown-toggle">Download <span class="dropdown-arrow">▼</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/admin/prompt/download" class="dropdown-link first">Prompt</a></li>
+                        <li><a href="/admin/help/download" class="dropdown-link">Help</a></li>
+                    </ul>
                 </li>
             </ul>
         </div>

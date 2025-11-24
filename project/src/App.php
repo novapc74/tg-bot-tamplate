@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Middleware\CsrfMiddleware;
 use Exception;
 use Throwable;
 use App\Views\View;
@@ -20,9 +21,13 @@ final class App
     {
     }
 
+    /**
+     * @throws Exception
+     */
     public function middleware(): void
     {
         AuthMiddleware::authenticate($this->request);
+        CsrfMiddleware::csrf();
     }
 
     public function get(string $route, callable $callback): void
