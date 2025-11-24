@@ -105,7 +105,8 @@ final class App
         echo (new View())
             ->render('pages/error/_404.php', [
                 'error' => $message,
-                'meta_title' => 'Page 404'
+                'meta_title' => 'Page 404',
+                'code' => '404',
             ]);
     }
 

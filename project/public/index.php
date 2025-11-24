@@ -146,7 +146,8 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request, array 
         return (new View())
             ->render('pages/error/_404.php', [
                 'code' => 400,
-                'error' => 'Файл не загрузился.'
+                'error' => 'Файл не загрузился.',
+                'meta_title' => 'Error page',
             ]);
     }
 
@@ -161,7 +162,8 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request, array 
         return (new View())
             ->render('pages/error/_404.php', [
                 'code' => 400,
-                'error' => 'Ошибка загрузки файла: ' . $file->name()
+                'error' => 'Ошибка загрузки файла: ' . $file->name(),
+                'meta_title' => 'Error page',
             ]);
     }
 
@@ -170,7 +172,8 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request, array 
         return (new View())
             ->render('pages/error/_404.php', [
                 'code' => 400,
-                'error' => 'Файл слишком большой:' . $file->name()
+                'error' => 'Файл слишком большой:' . $file->name(),
+                'meta_title' => 'Error page',
             ]);
     }
 
@@ -180,7 +183,8 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request, array 
         return (new View())
             ->render('pages/error/_404.php', [
                 'code' => 400,
-                'error' => 'Файл содержит невалидный json: ' . $file->name()
+                'error' => 'Файл содержит невалидный json: ' . $file->name(),
+                'meta_title' => 'Error page',
             ]);
     }
 
@@ -195,7 +199,8 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request, array 
     return (new View())
         ->render('pages/error/_404.php', [
             'code' => 400,
-            'error' => 'Ошибка записи файла на сервер: ' . $file->name()
+            'error' => 'Ошибка записи файла на сервер: ' . $file->name(),
+            'meta_title' => 'Error page',
         ]);
 });
 
