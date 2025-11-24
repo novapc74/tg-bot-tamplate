@@ -1,6 +1,6 @@
 {% extends 'base.php' %}
 
 {% block body %}
-<h1>Страница админ панели</h1>
+<h1 style="padding-top: 40px;">Админ панель 🛠</h1>
 {% end block %}
 

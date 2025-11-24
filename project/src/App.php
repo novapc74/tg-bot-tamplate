@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Middleware\AuthMiddleware;
+use App\Views\View;
 use Throwable;
 use Psr\Log\LoggerInterface;
 use App\Services\Request\TgRequestInterface;
@@ -10,9 +11,10 @@ use App\Services\Request\TgRequestInterface;
 final class App
 {
     private array $handlers = [];
+
     public function __construct(
-        private readonly LoggerInterface $logger,
-        private readonly TgRequestInterface         $request
+        private readonly LoggerInterface    $logger,
+        private readonly TgRequestInterface $request
     )
     {
     }
@@ -47,6 +49,9 @@ final class App
         $this->handlers[] = [$method, $route, $callback];
     }
 
+    /**
+     * @throws \Exception
+     */
     public function run(): void
     {
         $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
@@ -90,13 +95,18 @@ final class App
         $status = $hasRouteButWrongMethod ? 405 : 404;
         http_response_code($status);
 
-        $message = $hasRouteButWrongMethod ? 'Method Not Allowed' : 'Not Found';
+        $message = $hasRouteButWrongMethod ? 'Method Not Allowed' : ' Page not Found';
         $this->logger->warning(
             sprintf('Invalid request: uri=%s, method=%s (%s)', $uri, $method, $message)
         );
 
-        header('Content-Type: application/json');
-        echo json_encode(['error' => $message]);
+        header('Content-Type: text/html; charset=utf-8');
+
+        echo (new View())
+            ->render('pages/error/_404.php', [
+                'error' => $message,
+                'meta_title' => 'Page 404'
+            ]);
     }
 
     // Преобразует роут с {param} в regex
