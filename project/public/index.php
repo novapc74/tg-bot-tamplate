@@ -10,7 +10,7 @@ use App\Services\Request\TgRequestInterface;
 use App\Services\Request\UploadFileInterface;
 
 session_start();
-header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: text/html; charset=utf-8');
 
 if (!file_exists($bootstrap = __DIR__ . '/../config/bootstrap.php')) {
     http_response_code(422);
@@ -36,6 +36,8 @@ $app->get('/', function (TgRequestInterface $request, array $uriParams) {
 });
 
 $app->post('/webhook-endpoint', function (TgRequestInterface $request, array $uriParams) use ($container) {
+    header('Content-Type: application/json; charset=utf-8');
+
     /** @var LoggerInterface $logger */
     $logger = $container->get('webhook-endpoint');
     $token = $container->get('telegram-webhook-token');
@@ -93,31 +95,28 @@ $app->post('/auth', function (TgRequestInterface $request, array $uriParams) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
     if ($request->login()) {
-
         header('Location: admin');
         exit();
     }
 
     header('Location: login');
     exit();
-
 });
 
 
 $app->get('/admin', function (TgRequestInterface $request, array $uriParams) {
 
-    header('Content-Type: text/html; charset=utf-8');
+    $message = $_SESSION['FLASH'] ?? null;
+    $_SESSION['FLASH'] = false;
 
     return (new View())
         ->render('pages/admin/_index.php', [
             'meta_title' => 'Admin panel',
-            'test' => 10
+            'flash' => $message
         ]);
 });
 
 $app->get('/admin/prompt/create', function (TgRequestInterface $request, array $uriParams) {
-    header('Content-Type: text/html; charset=utf-8');
-
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
     return (new View())
@@ -128,11 +127,14 @@ $app->get('/admin/prompt/create', function (TgRequestInterface $request, array $
 });
 
 $app->post('/admin/prompt/upload', function (TgRequestInterface $request, array $uriParams) {
-    header('Content-Type: text/html; charset=utf-8');
-
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        #TODO вернуть страницу ошибки ...
-        die('Обнаружена CSRF атака!');
+
+        http_response_code(403);
+        return (new View())
+            ->render('pages/error/_404.php', [
+                'code' => 403,
+                'error' => 'Обнаружена CSRF атака!'
+            ]);
     }
 
     /** refresh token */
@@ -141,7 +143,11 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request, array 
     /** @var UploadFileInterface $file */
     if (!$file = $request->getFiles()[0] ?? null) {
         http_response_code(400);
-        return json_encode(['success' => false, 'error' => 'No files uploaded.']);
+        return (new View())
+            ->render('pages/error/_404.php', [
+                'code' => 400,
+                'error' => 'Файл не загрузился.'
+            ]);
     }
 
     $fileDir = __DIR__ . '/../storage/telegram/';
@@ -151,29 +157,52 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request, array 
     }
 
     if ($file->error() !== UPLOAD_ERR_OK) {
-        http_response_code(400);
-        return json_encode(['success' => false, 'error' => 'Upload error for file: ' . $file->name()]);
+        http_response_code(422);
+        return (new View())
+            ->render('pages/error/_404.php', [
+                'code' => 400,
+                'error' => 'Ошибка загрузки файла: ' . $file->name()
+            ]);
     }
 
     if ($file->size() > 2 * 1024 * 1024) {  // 2MB
-        return json_encode(['success' => false, 'error' => 'File too large: ' . $file->name()]);
+        http_response_code(422);
+        return (new View())
+            ->render('pages/error/_404.php', [
+                'code' => 400,
+                'error' => 'Файл слишком большой:' . $file->name()
+            ]);
     }
 
     $fileContent = file_get_contents($file->tmp_name());
     if (!json_validate($fileContent)) {
-        return json_encode(['success' => false, 'error' => 'File contains invalid json']);
+        http_response_code(422);
+        return (new View())
+            ->render('pages/error/_404.php', [
+                'code' => 400,
+                'error' => 'Файл содержит невалидный json: ' . $file->name()
+            ]);
     }
 
     $targetPath = $fileDir . 'prompt.json';
     if (file_put_contents($targetPath, $fileContent)) {
-        return json_encode([
-            'success' => true,
-            'token' => $_SESSION['csrf_token']
-        ]);
+        header('Location: /admin');
+        $_SESSION['FLASH'] = 'Файл успешно сохранен на сервере.';
+        exit();
     }
 
-    return json_encode(['success' => false, 'error' => 'Failed to save: ' . $file->name()]);
+    http_response_code(422);
+    return (new View())
+        ->render('pages/error/_404.php', [
+            'code' => 400,
+            'error' => 'Ошибка записи файла на сервер: ' . $file->name()
+        ]);
 });
 
-$app->run();
+try {
+    $app->run();
+} catch (Exception $e) {
+    #TODO добавить в логер...
+    exit(1);
+}
 
