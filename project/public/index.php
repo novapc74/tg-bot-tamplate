@@ -81,7 +81,6 @@ $app->get('/logout', function (TgRequestInterface $request, array $uriParams) {
 
 $app->post('/auth', function (TgRequestInterface $request, array $uriParams) {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        #TODO отрисобвать страницу с ошибкой...
         die('Обнаружена CSRF атака!');
     }
 
@@ -94,11 +93,9 @@ $app->post('/auth', function (TgRequestInterface $request, array $uriParams) {
         exit();
     }
 
-    return (new View())
-        ->render('pages/admin/_login.php', [
-            'meta_title' => 'Login',
-            'csrf_token' => $_SESSION['csrf_token'],
-        ]);
+    header('Location: login');
+    exit();
+
 });
 
 

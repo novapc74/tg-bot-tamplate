@@ -180,7 +180,7 @@ class Request extends AbstractSingleton implements TgRequestInterface, AuthInter
         $isValidPassword = password_verify($password, $adminPassword);
         $isValidLogin = $username === $adminName;
 
-        if ($isValidPassword && $username === $isValidLogin) {
+        if ($isValidPassword && $isValidLogin) {
             $_SESSION['logged'] = true;
 
             $isLogged = true;
