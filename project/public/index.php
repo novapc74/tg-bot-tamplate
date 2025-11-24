@@ -30,6 +30,11 @@ $app = $container->get(App::class);
 
 $app->middleware();
 
+$app->get('/', function (TgRequestInterface $request, array $uriParams) {
+    header('Location: admin');
+    exit();
+});
+
 $app->post('/webhook-endpoint', function (TgRequestInterface $request, array $uriParams) use ($container) {
     /** @var LoggerInterface $logger */
     $logger = $container->get('webhook-endpoint');
