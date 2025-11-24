@@ -2,13 +2,14 @@
 declare(strict_types=1);
 
 use App\App;
-use App\Handlers\PayloadDto;
-use App\Handlers\WebhookHandler;
 use App\Views\View;
 use Psr\Log\LoggerInterface;
+use App\Handlers\PayloadDto;
+use App\Handlers\WebhookHandler;
 use App\Services\Request\TgRequestInterface;
 use App\Services\Request\UploadFileInterface;
 
+session_start();
 header('Content-Type: application/json; charset=utf-8');
 
 if (!file_exists($bootstrap = __DIR__ . '/../config/bootstrap.php')) {
@@ -26,6 +27,8 @@ global $container;
 
 /** @var App $app */
 $app = $container->get(App::class);
+
+$app->middleware();
 
 $app->post('/webhook-endpoint', function (TgRequestInterface $request, array $uriParams) use ($container) {
     /** @var LoggerInterface $logger */
@@ -54,23 +57,53 @@ $app->post('/webhook-endpoint', function (TgRequestInterface $request, array $ur
 
     $logger->info(json_encode($body, JSON_UNESCAPED_UNICODE));
 
-    /** @var WebhookHandler $webhookHandler*/
+    /** @var WebhookHandler $webhookHandler */
     $webhookHandler = $container->get(WebhookHandler::class);
     $webhookHandler->handle(PayloadDto::init($body));
 
     return json_encode(['ok' => true]);
 });
 
-$app->get('/admin/{id}/user/{item}', function (TgRequestInterface $request, array $uriParams) {
+$app->get('/login', function (TgRequestInterface $request, array $uriParams) use ($container) {
+    header('Content-Type: text/html; charset=utf-8');
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
-    $id = $uriParams['id'];
-    $item = $uriParams['item'];
-    $queryParams = $request->getQuery();
-
-    return json_encode(compact('id', 'item', 'queryParams'));
+    return (new View())
+        ->render('pages/admin/_login.php', [
+            'meta_title' => 'Login',
+            'csrf_token' => $_SESSION['csrf_token'],
+        ]);
 });
 
+$app->get('/logout', function (TgRequestInterface $request, array $uriParams) {
+    $request->logout();
+});
+
+$app->post('/auth', function (TgRequestInterface $request, array $uriParams) {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        #TODO отрисобвать страницу с ошибкой...
+        die('Обнаружена CSRF атака!');
+    }
+
+    /** refresh token */
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+    if ($request->login()) {
+
+        header('Location: admin');
+        exit();
+    }
+
+    return (new View())
+        ->render('pages/admin/_login.php', [
+            'meta_title' => 'Login',
+            'csrf_token' => $_SESSION['csrf_token'],
+        ]);
+});
+
+
 $app->get('/admin', function (TgRequestInterface $request, array $uriParams) {
+
     header('Content-Type: text/html; charset=utf-8');
 
     return (new View())
@@ -83,7 +116,6 @@ $app->get('/admin', function (TgRequestInterface $request, array $uriParams) {
 $app->get('/admin/prompt/create', function (TgRequestInterface $request, array $uriParams) {
     header('Content-Type: text/html; charset=utf-8');
 
-    session_start();
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
     return (new View())
@@ -96,7 +128,6 @@ $app->get('/admin/prompt/create', function (TgRequestInterface $request, array $
 $app->post('/admin/prompt/upload', function (TgRequestInterface $request, array $uriParams) {
     header('Content-Type: text/html; charset=utf-8');
 
-    session_start();
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         #TODO вернуть страницу ошибки ...
         die('Обнаружена CSRF атака!');

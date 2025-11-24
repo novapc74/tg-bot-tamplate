@@ -5,7 +5,7 @@ namespace App\Services\Request;
 use InvalidArgumentException;
 use App\Services\Singleton\AbstractSingleton;
 
-class Request extends AbstractSingleton implements TgRequestInterface
+class Request extends AbstractSingleton implements TgRequestInterface, AuthInterface
 {
     private ?array $payload = null;
     private ?array $query = null;
@@ -144,5 +144,56 @@ class Request extends AbstractSingleton implements TgRequestInterface
         }
 
         return $this->files;
+    }
+
+    public function authenticate(): bool
+    {
+        $username = $_POST['username'] ?? '';
+        $password = $_POST['password'] ?? '';
+
+        if ($_SESSION['logged'] ?? null) {
+            return true;
+        }
+
+        $adminPassword = $_ENV['ADMIN_PASSWORD'] ?? 'cvljnjkuhncasskjn#%%Kjnzsdasdadasddd';
+        $adminName = $_ENV['ADMIN_NAME'] ?? 'cvljnjkuhncasskjnasdefffdzfea$$lnvd,nv_dfsml';
+
+        if ($adminPassword === $password && $adminName === $username) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function login(): bool
+    {
+        $isLogged = false;
+
+        $formData = $this->getFormData();
+
+        $username = $formData['login'] ?? null;
+        $password = $formData['password'] ?? null;
+
+        $adminName = $_ENV['ADMIN_NAME'];
+        $adminPassword = $_ENV['ADMIN_PASSWORD'];
+
+        $isValidPassword = password_verify($password, $adminPassword);
+        $isValidLogin = $username === $adminName;
+
+        if ($isValidPassword && $username === $isValidLogin) {
+            $_SESSION['logged'] = true;
+
+            $isLogged = true;
+        }
+
+        return $isLogged;
+    }
+
+    public function logout(): void
+    {
+        session_unset();
+        session_destroy();
+
+        header('Location: admin');
     }
 }

@@ -11,4 +11,6 @@ interface TgRequestInterface
     public function getFormData(): ?array;
 
     public function getFiles(): ?array;
+
+    public function authenticate(): bool;
 }

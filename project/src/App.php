@@ -2,12 +2,14 @@
 
 namespace App;
 
+use App\Middleware\AuthMiddleware;
 use Throwable;
 use Psr\Log\LoggerInterface;
 use App\Services\Request\TgRequestInterface;
 
 final class App
 {
+    private array $handlers = [];
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly TgRequestInterface         $request
@@ -15,7 +17,10 @@ final class App
     {
     }
 
-    private array $handlers = [];
+    public function middleware(): void
+    {
+        AuthMiddleware::authenticate($this->request);
+    }
 
     public function get(string $route, callable $callback): void
     {
