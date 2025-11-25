@@ -82,12 +82,12 @@ final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandle
 Другие модели по запросу:
 Окупаемость [ЗДЕСЬ](https://whattomine.com/asics)
 [¦КУПИТЬ¦](https://t.me/jonnyfase)
-[¦Чат¦](https://t.me/Mining_KRD_23)¦
-[¦Авито¦](https://www.avito.ru/brands/i71930904?src=sharing)¦
-[¦Отзывы¦](https://t.me/mining_krd_otziv)¦
-[¦USDT¦](https://rapira.net/?ref=06FL)¦
-[¦Bybit¦](https://www.bybit.com/invite?ref=RB2PKB)¦
-[¦Барахолка¦](https://t.me/mining_baraholka23)¦
+[¦Чат¦](https://t.me/Mining_KRD_23)
+[¦Авито¦](https://www.avito.ru/brands/i71930904?src=sharing)
+[¦Отзывы¦](https://t.me/mining_krd_otziv)
+[¦USDT¦](https://rapira.net/?ref=06FL)
+[¦Bybit¦](https://www.bybit.com/invite?ref=RB2PKB)
+[¦Барахолка¦](https://t.me/mining_baraholka23)
 [¦АВТОМОБИЛИ¦](https://t.me/ChinaMotors123)
 [¦ВИДЕОКАРТЫ¦](https://t.me/alimca_cn)
 Отправка по РФ\.
