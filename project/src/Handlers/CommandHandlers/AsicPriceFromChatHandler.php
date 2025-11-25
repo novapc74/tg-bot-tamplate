@@ -19,8 +19,8 @@ final readonly class AsicPriceFromChatHandler extends AbstractTelegramBotHandler
         $messageContent = $dto->getText();
 
         if (!str_contains($messageContent, 'Moscow Stock')) {
-            $this->logger->error('Сообщение на прайс не похоже.');
-            exit();
+            $this->logger->error('Сообщение на прайс не похоже. Тело: ' . json_encode($messageContent, JSON_UNESCAPED_UNICODE));
+            return;
         }
 
         $options = [
