@@ -55,7 +55,8 @@ final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandle
             }
         }
 
-        $prices = "Ваши цены:\n";
+        $currentDay = date('d-m-Y');
+        $prices = "🎉 $currentDay. Ваши цены:\n\n";
         foreach ($result as $city => $price) {
             $prices .= $city . "\n" . implode("\n", $price) . "\n\n";
         }

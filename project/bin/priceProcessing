@@ -35,5 +35,7 @@ foreach ($data as $line) {
     }
 }
 
+echo PHP_EOL . $currentDay = date('d-m-Y') . PHP_EOL;
+
 print_r($result);
 exit(0);
