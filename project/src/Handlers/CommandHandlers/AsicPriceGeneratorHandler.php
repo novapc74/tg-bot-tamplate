@@ -67,13 +67,13 @@ final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandle
         }
 
         $currentDay = date('d-m-Y');
-        $prices = "$currentDay\n\n";
+        $prices = "Прайс от *$currentDay*\n\n";
         foreach ($result as $city => $price) {
             $prices .= $city . "\n" . implode("\n", $price) . "\n\n";
         }
 
-        $search = [ '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
-        $replace = [ '\\_', '\\*', '\\[', '\\]', '\\(', '\\)', '\\~', '\\`', '\\>', '\\#', '\\+', '\\-', '\\=', '\\|', '\\{', '\\}', '\\.', '\\!'];
+        $search = ['_', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
+        $replace = ['\\_', '\\[', '\\]', '\\(', '\\)', '\\~', '\\`', '\\>', '\\#', '\\+', '\\-', '\\=', '\\|', '\\{', '\\}', '\\.', '\\!'];
 
         $prices = str_replace($search, $replace, $prices);
 
