@@ -49,11 +49,9 @@ final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandle
             $items = explode('$', $line);
             if (count($items) === 2) {
                 $name = $items[0];
-
                 $price = str_replace([' ', '  '], '', $items[1]);
-//                $price = (int)$price;
 
-                $result[$key][] = str_replace('  ', ' ', $name . ' $' . $price + 10);
+                $result[$key][] = str_replace('  ', ' ', $name . ' $' . self::updateItemPrice($price));
             }
         }
 
@@ -66,7 +64,7 @@ final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandle
         return $prices;
     }
 
-    private static function updateItemPrice(int &$price): void
+    private static function updateItemPrice(int|string &$price): void
     {
         $price = $price + 10;
     }
