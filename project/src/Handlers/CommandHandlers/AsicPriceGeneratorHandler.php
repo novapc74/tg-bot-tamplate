@@ -51,7 +51,7 @@ final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandle
                 $name = $items[0];
                 $price = str_replace([' ', '  '], '', $items[1]);
 
-                $result[$key][] = str_replace('  ', ' ', $name . ' $' . self::updateItemPrice($price));
+                $result[$key][] = str_replace('  ', ' ', $name . ' $' . $price + 10);
             }
         }
 
