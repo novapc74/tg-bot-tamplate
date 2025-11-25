@@ -62,14 +62,14 @@ final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandle
                 $price = (int)$price;
                 $price = self::updateItemPrice($price);
 
-                $result[$key][] = str_replace('  ', ' ', '#' . $name . ' $' . $price + 10);
+                $result[$key][] = str_replace('  ', ' ', '#' . $name . "*$$price*");
             }
         }
 
         $currentDay = date('d-m-Y');
         $prices = "Прайс от *$currentDay*\n\n";
         foreach ($result as $city => $price) {
-            $prices .= $city . "\n" . implode("\n", $price) . "\n\n";
+            $prices .= "*$city*" . "\n" . implode("\n", $price) . "\n\n";
         }
 
         $search = ['_', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
