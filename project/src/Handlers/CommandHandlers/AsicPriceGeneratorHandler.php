@@ -42,8 +42,12 @@ final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandle
         foreach ($data as $line) {
             $line = trim($line);
 
-            if (str_contains($line, 'Moscow Stock') || str_contains($line, 'Moscow (On the way)')) {
+            if (str_contains($line, 'Moscow Stock')) {
                 $key = $line;
+            }
+
+            if (str_contains($line, 'Moscow (On the way)')) {
+                break;
             }
 
             $items = explode('$', $line);
