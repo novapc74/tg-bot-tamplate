@@ -16,18 +16,16 @@ final readonly class AsicPriceFromChatHandler extends AbstractTelegramBotHandler
     public function handle(PayloadMessageInterface $dto): void
     {
         $chatId = $dto->getChatId();
-        $messageContent = $dto->getText();
+        $price = $dto->getText();
 
-        if (!str_contains($messageContent, 'Moscow Stock')) {
-            $this->logger->error('Сообщение на прайс не похоже. Тело: ' . json_encode($messageContent, JSON_UNESCAPED_UNICODE));
+        if (!str_contains($price, 'Moscow Stock')) {
+            $this->logger->error('Сообщение на прайс не похоже. Тело: ' . json_encode($price, JSON_UNESCAPED_UNICODE));
             return;
         }
 
         $options = [
             'parse_mode' => 'MarkdownV2',
         ];
-
-        $price = self::priceProcessing($messageContent);
 
         $priceDir = __DIR__ . '/../../../storage/telegram/';
         if (!is_dir($priceDir)) {

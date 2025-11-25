@@ -2,10 +2,10 @@
 
 namespace App\Handlers\CommandHandlers;
 
+use App\Traits\PriceTrait;
 use App\Handlers\PayloadMessageInterface;
 use App\Handlers\AbstractTelegramBotHandler;
 use App\Services\HttpClient\Dto\SendMessageDto;
-use App\Traits\PriceTrait;
 
 final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandler
 {
