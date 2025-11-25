@@ -24,8 +24,12 @@ final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandle
             return;
         }
 
+        $options = [
+            'parse_mode' => 'MarkdownV2',
+        ];
+
         $this->client->request(
-            SendMessageDto::init($chatId, $this->priceProcessing($priceFile))
+            SendMessageDto::init($chatId, $this->priceProcessing($priceFile), $options)
         );
     }
 
@@ -63,10 +67,21 @@ final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandle
         }
 
         $currentDay = date('d-m-Y');
-        $prices = "🎉  $currentDay  🎉 \n\n";
+        $prices = "$currentDay\n\n";
         foreach ($result as $city => $price) {
             $prices .= $city . "\n" . implode("\n", $price) . "\n\n";
         }
+
+        $search = [ '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
+        $replace = [ '\\_', '\\*', '\\[', '\\]', '\\(', '\\)', '\\~', '\\`', '\\>', '\\#', '\\+', '\\-', '\\=', '\\|', '\\{', '\\}', '\\.', '\\!'];
+
+        $prices = str_replace($search, $replace, $prices);
+
+
+        $prices .= <<<EOT
+Другие модели по запросу:
+Окупаемость [ЗДЕСЬ](https://whattomine.com/asics)
+EOT;
 
 
         return $prices;
