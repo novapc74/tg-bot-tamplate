@@ -2,26 +2,24 @@
 
 namespace App\Handlers;
 
-use InvalidArgumentException;
-
 final readonly class PayloadDto implements PayloadMessageInterface
 {
-    public function __construct(private array $message)
+    public function __construct(private array $body)
     {
     }
 
     public static function init(array $requestPayload): self
     {
-        if ($message = $requestPayload['message']) {
-            return new self($message);
-        }
-
-        throw new InvalidArgumentException('Message parameter must be provided');
+        return new self($requestPayload);
     }
 
     public function getText(): ?string
     {
-        if ($text = $this->message['text'] ?? null) {
+        if ($text = $this->body['message']['text'] ?? null) {
+            return $text;
+        }
+
+        if ($text = $this->body['channel_post']['text'] ?? null) {
             return $text;
         }
 
@@ -30,7 +28,11 @@ final readonly class PayloadDto implements PayloadMessageInterface
 
     public function getChatId(): ?string
     {
-        if ($chatId = $this->message['chat']['id'] ?? null) {
+        if ($chatId = $this->body['message']['chat']['id'] ?? null) {
+            return $chatId;
+        }
+
+        if ($chatId = $this->body['channel_post']['chat']['id'] ?? null) {
             return $chatId;
         }
 

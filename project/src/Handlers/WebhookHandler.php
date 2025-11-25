@@ -2,6 +2,7 @@
 
 namespace App\Handlers;
 
+use App\Handlers\CommandHandlers\AsicPriceFromChatHandler;
 use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -25,12 +26,17 @@ final readonly class WebhookHandler
     public function handle(PayloadMessageInterface $dto): void
     {
         $text = $dto->getText();
+        if ($dto->getChatId() == '-1003373031540') {
+            $text = '-1003373031540';
+        }
+
         $handler = match ($text) {
             HelpCommandHandler::COMMAND_NAME => HelpCommandHandler::class,
             ShowPromptCommandHandler::COMMAND_NAME => ShowPromptCommandHandler::class,
             StartCommandHandler::COMMAND_NAME => StartCommandHandler::class,
             ReportCommandHandler::COMMAND_NAME => ReportCommandHandler::class,
             AsicPriceGeneratorHandler::COMMAND_NAME => AsicPriceGeneratorHandler::class,
+            AsicPriceFromChatHandler::COMMAND_NAME => AsicPriceFromChatHandler::class,
             default => DefaultCommandHandler::class
         };
 
