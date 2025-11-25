@@ -1,6 +1,7 @@
 <?php
 
 use App\App;
+use App\Handlers\CommandHandlers\AsicPriceGeneratorHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use DI\ContainerBuilder;
@@ -17,7 +18,6 @@ use App\Handlers\CommandHandlers\StartCommandHandler;
 use App\Handlers\CommandHandlers\ReportCommandHandler;
 use App\Services\HttpClient\Client\ApiOpenRouterClient;
 use App\Handlers\CommandHandlers\ShowPromptCommandHandler;
-use App\Handlers\CommandHandlers\UpdatePromptCommandHandler;
 
 return function () {
 
@@ -113,10 +113,10 @@ return function () {
             return $logger;
         },
 
-        'prompt-handler' => function () {
-            $logger = new Logger('prompt-handler');
+        'show-prompt-handler' => function () {
+            $logger = new Logger('show-prompt-handler');
             $logger->pushHandler(
-                new RotatingFileHandler(__DIR__ . '/../var/log/prompt-handler/prompt-handler.log',
+                new RotatingFileHandler(__DIR__ . '/../var/log/show-prompt/show-prompt-handler.log',
                     10,
                     Level::Debug
                 ));
@@ -127,6 +127,16 @@ return function () {
             $logger = new Logger('report-handler');
             $logger->pushHandler(
                 new RotatingFileHandler(__DIR__ . '/../var/log/report-handler/report-handler.log',
+                    10,
+                    Level::Debug
+                ));
+            return $logger;
+        },
+
+        'price-handler' => function () {
+            $logger = new Logger('price-handler');
+            $logger->pushHandler(
+                new RotatingFileHandler(__DIR__ . '/../var/log/price-handler/price-handler.log',
                     10,
                     Level::Debug
                 ));
@@ -187,17 +197,10 @@ return function () {
             );
         },
 
-        UpdatePromptCommandHandler::class => function (ContainerInterface $container) {
-            return new UpdatePromptCommandHandler(
-                $container->get(ApiTelegramClient::class),
-                $container->get('prompt-handler')
-            );
-        },
-
         ShowPromptCommandHandler::class => function (ContainerInterface $container) {
             return new ShowPromptCommandHandler(
                 $container->get(ApiTelegramClient::class),
-                $container->get('prompt-handler')
+                $container->get('show-prompt-handler')
             );
         },
 
@@ -225,6 +228,13 @@ return function () {
                 $container,
             );
         },
+
+        AsicPriceGeneratorHandler::class => function (ContainerInterface $container) {
+            return new AsicPriceGeneratorHandler(
+                $container->get(ApiTelegramClient::class),
+                $container->get('price-handler'),
+            );
+        }
     ];
 
     return (new ContainerBuilder())

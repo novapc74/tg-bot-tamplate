@@ -2,14 +2,15 @@
 
 namespace App\Handlers;
 
-use App\Handlers\CommandHandlers\HelpCommandHandler;
-use App\Handlers\CommandHandlers\ReportCommandHandler;
-use App\Handlers\CommandHandlers\ShowPromptCommandHandler;
-use App\Handlers\CommandHandlers\StartCommandHandler;
-use Psr\Container\ContainerExceptionInterface;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use Psr\Log\LoggerInterface;
+use Psr\Container\ContainerExceptionInterface;
+use App\Handlers\CommandHandlers\HelpCommandHandler;
+use App\Handlers\CommandHandlers\StartCommandHandler;
+use App\Handlers\CommandHandlers\ReportCommandHandler;
+use App\Handlers\CommandHandlers\ShowPromptCommandHandler;
+use App\Handlers\CommandHandlers\AsicPriceGeneratorHandler;
 
 final readonly class WebhookHandler
 {
@@ -29,6 +30,7 @@ final readonly class WebhookHandler
             ShowPromptCommandHandler::COMMAND_NAME => ShowPromptCommandHandler::class,
             StartCommandHandler::COMMAND_NAME => StartCommandHandler::class,
             ReportCommandHandler::COMMAND_NAME => ReportCommandHandler::class,
+            AsicPriceGeneratorHandler::COMMAND_NAME => AsicPriceGeneratorHandler::class,
             default => DefaultCommandHandler::class
         };
 

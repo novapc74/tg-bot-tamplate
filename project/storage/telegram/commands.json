@@ -2,21 +2,22 @@
     "commands": [
         {
             "command": "/help",
-            "description": "- Показать справку по использованию бота."
+            "description": "- Показать справку по использованию бота"
         },
         {
             "command": "/report",
-            "description": "- Сгенерировать отчет."
+            "description": "- Сгенерировать отчет"
         },
         {
             "command": "/prompt",
-            "description": "- Показать текущий prompt."
+            "description": "- Показать текущий prompt"
+        },
+        {
+            "command": "/asic_price",
+            "description": "- Показать прайс асиков"
         }
     ],
     "scope": {
         "type": "default"
     }
 }
-/help - Справка.
-/report - Сгенерировать отчет.
-/prompt - Показать prompt.

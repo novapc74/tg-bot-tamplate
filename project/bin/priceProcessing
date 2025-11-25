@@ -1,0 +1,39 @@
+#!/usr/bin/env php
+<?php
+
+if (!file_exists($file = __DIR__ . '/../storage/telegram/price.txt')) {
+    exit('Price file not found.');
+}
+
+echo 'Price file: ' . $file . PHP_EOL;
+
+$fileContent = file_get_contents($file);
+
+$fileContent = str_replace('🇷🇺', '', $fileContent);
+
+$data = explode("\n", $fileContent);
+
+$result = [
+    'Moscow Stock' => [],
+    'Moscow (On the way)' => []
+];
+
+$key = null;
+foreach ($data as $line) {
+    $line = trim($line);
+
+    if (str_contains($line, 'Moscow Stock') || str_contains($line, 'Moscow (On the way)')) {
+        $key = $line;
+    }
+
+    $items = explode('$', $line);
+    if (count($items) === 2) {
+        $name = $items[0];
+        $price = str_replace([' ', '  '], '', $items[1]);
+
+        $result[$key][] = str_replace('  ',' ',$name . ' $' . $price + 10);
+    }
+}
+
+print_r($result);
+exit(0);

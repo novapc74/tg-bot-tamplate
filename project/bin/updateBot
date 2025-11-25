@@ -9,7 +9,6 @@ use App\Services\HttpClient\Client\ApiTelegramClient;
 use App\Handlers\CommandHandlers\StartCommandHandler;
 use App\Handlers\CommandHandlers\ReportCommandHandler;
 use App\Handlers\CommandHandlers\ShowPromptCommandHandler;
-use App\Handlers\CommandHandlers\UpdatePromptCommandHandler;
 
 if (!file_exists($bootstrap = __DIR__ . '/../config/bootstrap.php')) {
     exit('Bootstrap file not found.');
@@ -29,22 +28,10 @@ $offset = $i = 0;
 $processing = function (string $text, array $update) use ($container) {
     $text = trim(strtolower($text));
 
-    $customForms = [
-        UpdatePromptCommandHandler::COMMAND_NAME
-    ];
-
-    foreach ($customForms as $command) {
-        if (str_starts_with($text, $command)) {
-            $text = $command;
-            break;
-        }
-    }
-
     $handle = match ($text) {
         HelpCommandHandler::COMMAND_NAME => HelpCommandHandler::class,
         ShowPromptCommandHandler::COMMAND_NAME => ShowPromptCommandHandler::class,
         StartCommandHandler::COMMAND_NAME => StartCommandHandler::class,
-        UpdatePromptCommandHandler::COMMAND_NAME => UpdatePromptCommandHandler::class,
         ReportCommandHandler::COMMAND_NAME => ReportCommandHandler::class,
         default => DefaultCommandHandler::class
     };

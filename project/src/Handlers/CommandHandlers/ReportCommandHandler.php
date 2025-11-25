@@ -2,8 +2,8 @@
 
 namespace App\Handlers\CommandHandlers;
 
-use App\Handlers\AbstractTelegramBotHandler;
 use App\Handlers\PayloadMessageInterface;
+use App\Handlers\AbstractTelegramBotHandler;
 use App\Services\HttpClient\Dto\SendMessageDto;
 
 final readonly class ReportCommandHandler extends AbstractTelegramBotHandler
