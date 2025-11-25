@@ -90,7 +90,7 @@ final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandle
 [¦Барахолка¦](https://t.me/mining_baraholka23)¦
 [¦АВТОМОБИЛИ¦](https://t.me/ChinaMotors123)
 [¦ВИДЕОКАРТЫ¦](https://t.me/alimca_cn)
-Отправка по РФ.
+Отправка по РФ\.
 [Голосовать](https://t.me/boost/mining_KRD123) ✅ за канал
 EOT;
 
