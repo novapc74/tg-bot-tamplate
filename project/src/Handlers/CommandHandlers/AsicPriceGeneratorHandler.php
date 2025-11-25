@@ -102,6 +102,7 @@ final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandle
         return <<<EOT
 Другие модели по запросу:
 Окупаемость [ЗДЕСЬ](https://whattomine.com/asics)
+🔤🔤🔤🔤 🔤🔤🔤🔤
 [¦КУПИТЬ¦](https://t.me/jonnyfase)
 [¦Чат¦](https://t.me/Mining_KRD_23)
 [¦Авито¦](https://www.avito.ru/brands/i71930904?src=sharing)
