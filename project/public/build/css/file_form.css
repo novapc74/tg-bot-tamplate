@@ -10,26 +10,57 @@
 
 form {
     border: 1px solid #ccc;
-    padding: 30px;
+    padding: 22px 30px 30px 30px;
     border-radius: 8px;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
-input[type="file"] {
-    margin: 10px 0;
+label {
+    display: block;
+    margin-top: 8px;
+    color: #0056b3;
+}
+
+input[type="file"]::file-selector-button {
+    background-color: gray;
+    color: white;
+    padding: 8px;
+    border: 1px solid gray;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+input[type="text"],
+input[type="password"] {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    align-items: baseline;
+    margin-top: 8px;
+    padding: 8px;
+}
+
+.form-menu {
+    text-align: center;
+    color: #2E2828;
 }
 
 button {
+    display: block;
     background: #007bff;
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    margin-top: 20px;
 }
+
 button:hover {
     background: #0056b3;
 }
+
 span {
     color: #8B0000;
     font-style: italic;
