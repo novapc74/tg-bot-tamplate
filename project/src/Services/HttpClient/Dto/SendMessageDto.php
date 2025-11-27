@@ -29,18 +29,18 @@ final readonly class SendMessageDto implements HttpClientDtoInterface
                 'chat_id' => $this->chatId,
                 'text' => $this->message,
                 'parse_mode' => 'Markdown',
-                'reply_markup' => [
-                    'inline_keyboard' => json_encode([
-                        [
-                            [
-                                'text' => 'Open',
-                                'web_app' => [
-                                    'url' => 'https://t.me/novapc_bot/novapc_app'
-                                ]
-                            ]
-                        ]
-                    ])
-                ],
+//                'reply_markup' => [
+//                    'inline_keyboard' => json_encode([
+//                        [
+//                            [
+//                                'text' => 'Open',
+//                                'web_app' => [
+//                                    'url' => 'https://t.me/novapc_bot/novapc_app'
+//                                ]
+//                            ]
+//                        ]
+//                    ])
+//                ],
             ]
         ];
 
