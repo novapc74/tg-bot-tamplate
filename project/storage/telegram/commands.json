@@ -1,7 +1,7 @@
 {
     "commands": [
         {
-            "command": "/help",
+            "command": "/manual",
             "description": "- Показать справку по использованию бота"
         },
         {

@@ -9,7 +9,7 @@ use App\Services\HttpClient\Dto\SendMessageDto;
 final readonly class StartCommandHandler extends AbstractTelegramBotHandler
 {
     const string COMMAND_NAME = '/start';
-    private const string START_MESSAGE = 'Приветствуем в нашем чате! Для получения инструкции введите "/help"';
+    private const string START_MESSAGE = 'Приветствуем в нашем чате! Для получения инструкции введите "/manual"';
 
     public function handle(TelegramPayloadInterface $dto): void
     {

@@ -9,7 +9,7 @@ use App\Services\HttpClient\Dto\SendMessageDto;
 final readonly class HelpCommandHandler extends AbstractTelegramBotHandler
 {
     private const string HELP_MESSAGE = '<b>Инструкция пользования чатом:</b> <span class="tg-spoiler" style="color: red">(в разработке)</span>. <tg-emoji emoji-id="5368324170671202286">👍</tg-emoji><pre>pre-formatted fixed-width code block</pre>';
-    const string COMMAND_NAME = '/help';
+    const string COMMAND_NAME = '/manual';
 
     public function handle(TelegramPayloadInterface $dto): void
     {
