@@ -29,6 +29,38 @@ final readonly class SendMessageDto implements HttpClientDtoInterface
                 'chat_id' => $this->chatId,
                 'text' => $this->message,
                 'parse_mode' => 'Markdown',
+                'reply_markup' => [
+                    'inline_keyboard' => [
+                        [
+                            [
+                                'text' => 'HELP',
+                                'callback_data' => '/help',
+                            ],
+                            [
+                                'text' => 'IMAGE',
+                                'callback_data' => 'image_action',
+                            ],
+                            [
+                                'text' => 'FORM',
+                                'callback_data' => 'form_action',
+                            ],
+                            [
+                                'text' => 'D',
+                                'callback_data' => 'action4',
+                            ],
+                        ],
+                        [
+                            [
+                                'text' => 'Google',
+                                'url' => 'https://google.com/',
+                            ],
+                            [
+                                'text' => 'HH',
+                                'url' => 'https://hh.ru/',
+                            ],
+                        ],
+                    ],
+                ],
             ]
         ];
 

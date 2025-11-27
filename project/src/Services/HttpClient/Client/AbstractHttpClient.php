@@ -30,18 +30,18 @@ abstract class AbstractHttpClient
     {
         $this->options = $options;
 
-        $this->options['json']['reply_markup'] = [
-            'inline_keyboard' => [
-                [
-                    [
-                        'text' => 'Open',
-                        'web_app' => [
-                            'url' => 'https://t.me/novapc_bot/novapc_app'
-                        ]
-                    ]
-                ]
-            ]
-        ];
+//        $this->options['json']['reply_markup'] = [
+//            'inline_keyboard' => [
+//                [
+//                    [
+//                        'text' => 'Open',
+//                        'web_app' => [
+//                            'url' => 'https://t.me/novapc_bot/novapc_app'
+//                        ]
+//                    ]
+//                ]
+//            ]
+//        ];
 
         $this->auth();
 
