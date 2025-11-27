@@ -4,7 +4,7 @@ desktop версия \- "/"
 mobile версия \- "Menu"
 ```
 _Команды:_
-`/help` \- инструкция
+`/manual` \- инструкция
 `/report` \- отчет
 `/prompt` \- промпт
 `/asic_price` \- прайс

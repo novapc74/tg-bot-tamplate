@@ -23,7 +23,7 @@ final readonly class HelpCommandHandler extends AbstractTelegramBotHandler
             'parse_mode' => 'HTML',
         ];
 
-        $helpFile = __DIR__ . '/../../../storage/telegram/help_command.md';
+        $helpFile = __DIR__ . '/../../../storage/telegram/manual.md';
         if (file_exists($helpFile)) {
             $text = file_get_contents($helpFile);
             $options = [

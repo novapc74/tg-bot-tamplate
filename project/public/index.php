@@ -246,11 +246,11 @@ $app->get('/admin/prompt/download', function () {
 });
 
 $app->get('/admin/help/download', function () {
-    $file = __DIR__ . '/../storage/telegram/help_command.md';
+    $file = __DIR__ . '/../storage/telegram/manual.md';
 
     if (is_file($file)) {
         header('Content-Type: application/json');
-        header('Content-Disposition: attachment; filename="help_command.md"');
+        header('Content-Disposition: attachment; filename="manual.md"');
         header('Content-Length: ' . filesize($file));
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
@@ -265,12 +265,12 @@ $app->get('/admin/help/download', function () {
         ->render('pages/error/_404.php', [
             'code' => '422',
             'meta_title' => 'Error page',
-            'error' => 'Файл "help_command.md" не найден.'
+            'error' => 'Файл "manual.md" не найден.'
         ]);
 });
 
 $app->get('/admin/help/show', function () {
-    $file = __DIR__ . '/../storage/telegram/help_command.md';
+    $file = __DIR__ . '/../storage/telegram/manual.md';
 
     if (is_file($file)) {
         $content = file_get_contents($file);
@@ -340,7 +340,7 @@ $app->post('/admin/help/upload', function (TgRequestInterface $request) {
     }
 
     $fileContent = file_get_contents($file->tmp_name());
-    if (file_put_contents($fileDir . 'help_command.md', $fileContent)) {
+    if (file_put_contents($fileDir . 'manual.md', $fileContent)) {
         header('Location: /admin');
         $_SESSION['FLASH'] = 'Файл успешно сохранен на сервере.';
         exit();
