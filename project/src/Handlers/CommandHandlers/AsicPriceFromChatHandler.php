@@ -15,7 +15,7 @@ final readonly class AsicPriceFromChatHandler extends AbstractTelegramBotHandler
 
     public function handle(PayloadMessageInterface $dto): void
     {
-        $chatId = $dto->getChatId();
+        $chatId = $dto->getChat()->getId();
         $price = $dto->getText();
 
         if (!str_contains($price, 'Moscow Stock')) {

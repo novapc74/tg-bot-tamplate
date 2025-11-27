@@ -11,6 +11,8 @@ class Chat
     const string SUPERGROUP = 'supergroup';
     const string CHANEL = 'channel';
     private ?string $id;
+    private ?string $firstName;
+    private ?string $lastName;
     private ?string $title;
     private ?string $username;
     private ?string $type;
@@ -21,11 +23,23 @@ class Chat
         $this->title = $chatData['title'] ?? null;
         $this->username = $chatData['username'] ?? null;
         $this->type = $chatData['type'] ?? null;
+        $this->firstName = $chatData['first_name'] ?? null;
+        $this->lastName = $chatData['last_name'] ?? null;
     }
 
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
     }
 
     public function getTitle(): string
