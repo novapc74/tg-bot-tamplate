@@ -3,6 +3,7 @@
 use App\App;
 use App\Handlers\CommandHandlers\AsicPriceFromChatHandler;
 use App\Handlers\CommandHandlers\AsicPriceGeneratorHandler;
+use App\Handlers\CommandHandlers\AsicPriceToChatHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use DI\ContainerBuilder;
@@ -154,6 +155,16 @@ return function () {
             return $logger;
         },
 
+        'price-to-chat-handler' => function () {
+            $logger = new Logger('price-to-chat-handler');
+            $logger->pushHandler(
+                new RotatingFileHandler(__DIR__ . '/../var/log/price-to-chat-handler/price-to-chat-handler.log',
+                    10,
+                    Level::Debug
+                ));
+            return $logger;
+        },
+
         'open-router-client' => function () {
             $logger = new Logger('open-router-client');
             $logger->pushHandler(
@@ -252,7 +263,14 @@ return function () {
                 $container->get(ApiTelegramClient::class),
                 $container->get('price-chat-handler'),
             );
-        }
+        },
+
+        AsicPriceToChatHandler::class => function (ContainerInterface $container) {
+            return new AsicPriceToChatHandler(
+                $container->get(ApiTelegramClient::class),
+                $container->get('price-to-chat-handler'),
+            );
+        },
     ];
 
     return (new ContainerBuilder())

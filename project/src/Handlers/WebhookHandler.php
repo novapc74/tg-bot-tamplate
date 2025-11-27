@@ -3,6 +3,7 @@
 namespace App\Handlers;
 
 use App\Handlers\CommandHandlers\AsicPriceFromChatHandler;
+use App\Handlers\CommandHandlers\AsicPriceToChatHandler;
 use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -25,20 +26,36 @@ final readonly class WebhookHandler
      */
     public function handle(TelegramPayloadInterface $dto): void
     {
-        $text = $dto->getText();
         if ($dto->getChat()->getId() == '-1003373031540') {
+            $text = 'save new price from chat';
             $handler = AsicPriceFromChatHandler::class;
-        } else {
-            $handler = match ($text) {
-                HelpCommandHandler::COMMAND_NAME => HelpCommandHandler::class,
-                ShowPromptCommandHandler::COMMAND_NAME => ShowPromptCommandHandler::class,
-                StartCommandHandler::COMMAND_NAME => StartCommandHandler::class,
-                ReportCommandHandler::COMMAND_NAME => ReportCommandHandler::class,
-                AsicPriceGeneratorHandler::COMMAND_NAME => AsicPriceGeneratorHandler::class,
-                AsicPriceFromChatHandler::COMMAND_NAME => AsicPriceFromChatHandler::class,
-                default => DefaultCommandHandler::class
-            };
+
+            $this->logger->info(sprintf('Handler received: %s, text: %s', $handler, $text));
+
+            $handler = $this->container->get($handler);
+            $handler->handle($dto);
+
+            $text = 'send new price to chat';
+            $handler = AsicPriceToChatHandler::class;
+
+            $this->logger->info(sprintf('Handler received: %s, text: %s', $handler, $text));
+
+            $handler = $this->container->get($handler);
+            $handler->handle($dto);
+
+            return;
         }
+
+        $text = $dto->getText();
+        $handler = match ($text) {
+            HelpCommandHandler::COMMAND_NAME => HelpCommandHandler::class,
+            ShowPromptCommandHandler::COMMAND_NAME => ShowPromptCommandHandler::class,
+            StartCommandHandler::COMMAND_NAME => StartCommandHandler::class,
+            ReportCommandHandler::COMMAND_NAME => ReportCommandHandler::class,
+            AsicPriceGeneratorHandler::COMMAND_NAME => AsicPriceGeneratorHandler::class,
+            AsicPriceFromChatHandler::COMMAND_NAME => AsicPriceFromChatHandler::class,
+            default => DefaultCommandHandler::class
+        };
 
         $this->logger->info(sprintf('Handler received: %s, text: %s', $handler, $text));
 

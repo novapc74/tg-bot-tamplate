@@ -1,8 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-use App\Handlers\PayloadDto;
-
 if (!file_exists($bootstrap = __DIR__ . '/../config/bootstrap.php')) {
     exit('Bootstrap file not found.');
 }
@@ -11,43 +9,19 @@ require_once $bootstrap;
 
 global $container;
 
-function toArray(): array
-{
-    $content = '{
-    "update_id": 458558897,
-    "message": {
-        "message_id": 1186,
-        "from": {
-            "id": 645759570,
-            "is_bot": false,
-            "first_name": "Вячеслав",
-            "last_name": "Макаров",
-            "username": "novapc",
-            "language_code": "en"
-        },
-        "chat": {
-            "id": 645759570,
-            "first_name": "Вячеслав",
-            "last_name": "Макаров",
-            "username": "novapc",
-            "type": "private"
-        },
-        "date": 1764231962,
-        "text": "\/help",
-        "entities": [
-            {
-                "offset": 0,
-                "length": 5,
-                "type": "bot_command"
-            }
-        ]
+$token = '8566674584:AAEZbBSsZVpzXPPf5TJa4G7Gy11-lErVl5w';
+$chat_id = '-1003373031540'; // ID публичного чата
+$url = 'https://api.telegram.org/bot' . $token . '/getUpdates?chat_id=' . $chat_id;
+
+$response = file_get_contents($url);
+$updates = json_decode($response, true);
+
+// Проходим по обновлениям и выводим сообщения
+foreach ($updates['result'] as $update) {
+    if (isset($update['message'])) {
+        $message = $update['message'];
+        echo 'Chat ID: ' . $message['chat']['id'] . "\n";
+        echo 'Message: ' . $message['text'] . "\n";
     }
-}';
-
-    return json_decode($content, true);
 }
-
-$dto = PayloadDto::init(toArray());
-
-echo PHP_EOL . $dto->getText() . PHP_EOL . $dto->getChat()->getId() . PHP_EOL;
 
