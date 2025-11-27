@@ -23,10 +23,10 @@ final readonly class WebhookHandler
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function handle(PayloadMessageInterface $dto): void
+    public function handle(TelegramPayloadInterface $dto): void
     {
         $text = $dto->getText();
-        if ($dto->getChatId() == '-1003373031540') {
+        if ($dto->getChat()->getId() == '-1003373031540') {
             $text = '-1003373031540';
         }
 
