@@ -9,19 +9,3 @@ require_once $bootstrap;
 
 global $container;
 
-$token = '8566674584:AAEZbBSsZVpzXPPf5TJa4G7Gy11-lErVl5w';
-$chat_id = '-1003373031540'; // ID публичного чата
-$url = 'https://api.telegram.org/bot' . $token . '/getUpdates?chat_id=' . $chat_id;
-
-$response = file_get_contents($url);
-$updates = json_decode($response, true);
-
-// Проходим по обновлениям и выводим сообщения
-foreach ($updates['result'] as $update) {
-    if (isset($update['message'])) {
-        $message = $update['message'];
-        echo 'Chat ID: ' . $message['chat']['id'] . "\n";
-        echo 'Message: ' . $message['text'] . "\n";
-    }
-}
-
