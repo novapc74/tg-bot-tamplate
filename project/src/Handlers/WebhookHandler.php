@@ -26,7 +26,9 @@ final readonly class WebhookHandler
      */
     public function handle(TelegramPayloadInterface $dto): void
     {
-        if ($dto->getChat()->getId() == '-1003373031540' && str_contains($dto->getText(), 'Moscow Stock')) {
+        $text = $dto->getText();
+
+        if ($dto->getChat()->getId() == '-1003373031540' && str_contains($text, 'Moscow Stock')) {
             $text = 'save new price from chat';
             $handler = AsicPriceFromChatHandler::class;
 
@@ -43,10 +45,9 @@ final readonly class WebhookHandler
             $handler = $this->container->get($handler);
             $handler->handle($dto);
 
-            return;
+            exit(0);
         }
 
-        $text = $dto->getText();
         $handler = match ($text) {
             HelpCommandHandler::COMMAND_NAME => HelpCommandHandler::class,
             ShowPromptCommandHandler::COMMAND_NAME => ShowPromptCommandHandler::class,
