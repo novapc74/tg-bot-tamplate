@@ -7,7 +7,7 @@ final readonly class SendMessageDto implements HttpClientDtoInterface
     public function __construct(
         private string $chatId,
         private string $message,
-        private array $options,
+        private array  $options,
     )
     {
     }
@@ -33,31 +33,11 @@ final readonly class SendMessageDto implements HttpClientDtoInterface
                     'inline_keyboard' => [
                         [
                             [
-                                'text' => 'HELP',
-                                'callback_data' => '/help',
-                            ],
-                            [
-                                'text' => 'IMAGE',
-                                'callback_data' => 'image_action',
-                            ],
-                            [
-                                'text' => 'FORM',
-                                'callback_data' => 'form_action',
-                            ],
-                            [
-                                'text' => 'D',
-                                'callback_data' => 'action4',
-                            ],
-                        ],
-                        [
-                            [
-                                'text' => 'Google',
-                                'url' => 'https://google.com/',
-                            ],
-                            [
-                                'text' => 'HH',
-                                'url' => 'https://hh.ru/',
-                            ],
+                                'text' => 'Open',
+                                'web_app' => [
+                                    'url' => 'https://t.me/novapc_bot/novapc_app'
+                                ]
+                            ]
                         ],
                     ],
                 ],
@@ -66,7 +46,7 @@ final readonly class SendMessageDto implements HttpClientDtoInterface
 
         if (!empty($this->options)) {
             $params = [
-             'json' => array_merge($params['json'], $this->options)
+                'json' => array_merge($params['json'], $this->options)
             ];
 
         }
