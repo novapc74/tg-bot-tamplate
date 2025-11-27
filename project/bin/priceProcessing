@@ -49,5 +49,5 @@ function toArray(): array
 
 $dto = PayloadDto::init(toArray());
 
-echo PHP_EOL . $dto->getChat()->getId() . PHP_EOL;
+echo PHP_EOL . $dto->getText() . PHP_EOL . $dto->getChat()->getId() . PHP_EOL;
 

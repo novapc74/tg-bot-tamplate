@@ -20,7 +20,7 @@ final readonly class DefaultCommandHandler extends AbstractTelegramBotHandler
         parent::__construct($client, $logger);
     }
 
-    public function handle(PayloadMessageInterface $dto): void
+    public function handle(TelegramPayloadInterface $dto): void
     {
         if (!$chatId = $dto->getChat()->getId()) {
             $this->logger->error('Не установлен ID чата. Прерываем.');

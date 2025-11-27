@@ -3,7 +3,7 @@
 namespace App\Handlers\CommandHandlers;
 
 use App\Handlers\AbstractTelegramBotHandler;
-use App\Handlers\PayloadMessageInterface;
+use App\Handlers\TelegramPayloadInterface;
 use App\Services\HttpClient\Dto\SendMessageDto;
 
 final readonly class HelpCommandHandler extends AbstractTelegramBotHandler
@@ -11,7 +11,7 @@ final readonly class HelpCommandHandler extends AbstractTelegramBotHandler
     private const string HELP_MESSAGE = '<b>Инструкция пользования чатом:</b> <span class="tg-spoiler" style="color: red">(в разработке)</span>. <tg-emoji emoji-id="5368324170671202286">👍</tg-emoji><pre>pre-formatted fixed-width code block</pre>';
     const string COMMAND_NAME = '/help';
 
-    public function handle(PayloadMessageInterface $dto): void
+    public function handle(TelegramPayloadInterface $dto): void
     {
         if (!$chatId = $dto->getChat()?->getId()) {
             $this->logger->error('Не установлен ID чата. Прерываем. тело ответа');

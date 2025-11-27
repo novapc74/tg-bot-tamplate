@@ -2,7 +2,7 @@
 
 namespace App\Handlers\CommandHandlers;
 
-use App\Handlers\PayloadMessageInterface;
+use App\Handlers\TelegramPayloadInterface;
 use App\Handlers\AbstractTelegramBotHandler;
 use App\Services\HttpClient\Dto\SendMessageDto;
 
@@ -10,7 +10,7 @@ final readonly class ReportCommandHandler extends AbstractTelegramBotHandler
 {
     const string COMMAND_NAME = '/report';
 
-    public function handle(PayloadMessageInterface $dto): void
+    public function handle(TelegramPayloadInterface $dto): void
     {
         if (!$chatId = $dto->getChat()?->getId()) {
             $this->logger->error('Не установлен ID чата. Прерываем. тело ответа');
