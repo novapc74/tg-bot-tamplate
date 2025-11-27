@@ -39,20 +39,20 @@ final readonly class SendMessageDto implements HttpClientDtoInterface
         ];
 
         $params = [
-            'form_params' => [
+            'json' => [
                 'chat_id' => $this->chatId,
                 'text' => $this->message,
                 'parse_mode' => 'Markdown',
-                'reply_markup' => json_encode($inline),
+//                'reply_markup' => json_encode($inline),
             ]
         ];
 
-//        if (!empty($this->options)) {
-//            $params = [
-//                'json' => array_merge($params['json'], $this->options)
-//            ];
-//
-//        }
+        if (!empty($this->options)) {
+            $params = [
+                'json' => array_merge($params['json'], $this->options)
+            ];
+
+        }
 
         return $params;
     }
