@@ -12,7 +12,7 @@ final readonly class ReportCommandHandler extends AbstractTelegramBotHandler
 
     public function handle(PayloadMessageInterface $dto): void
     {
-        if (!$chatId = $dto->getChatId()) {
+        if (!$chatId = $dto->getChat()?->getId()) {
             $this->logger->error('Не установлен ID чата. Прерываем. тело ответа');
             return;
         }

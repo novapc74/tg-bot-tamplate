@@ -10,11 +10,12 @@ use App\Services\HttpClient\Dto\SendMessageDto;
 final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandler
 {
     use PriceTrait;
+
     const string COMMAND_NAME = '/asic_price';
 
     public function handle(PayloadMessageInterface $dto): void
     {
-        if (!$chatId = $dto->getChatId()) {
+        if (!$chatId = $dto->getChat()?->getId()) {
             $this->logger->error('Не установлен ID чата. Прерываем. тело ответа');
             return;
         }
@@ -31,7 +32,11 @@ final readonly class AsicPriceGeneratorHandler extends AbstractTelegramBotHandle
         ];
 
         $this->client->request(
-            SendMessageDto::init($chatId, self::priceProcessing($priceFile), $options)
+            SendMessageDto::init(
+                $chatId,
+                self::priceProcessing($priceFile),
+                $options
+            )
         );
     }
 }
