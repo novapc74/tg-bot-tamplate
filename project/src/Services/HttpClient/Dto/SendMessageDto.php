@@ -30,7 +30,7 @@ final readonly class SendMessageDto implements HttpClientDtoInterface
                 'text' => $this->message,
                 'parse_mode' => 'Markdown',
                 'reply_markup' => [
-                    'inline_keyboard' => [
+                    'inline_keyboard' => json_encode([
                         [
                             [
                                 'text' => 'Open',
@@ -38,8 +38,8 @@ final readonly class SendMessageDto implements HttpClientDtoInterface
                                     'url' => 'https://t.me/novapc_bot/novapc_app'
                                 ]
                             ]
-                        ],
-                    ],
+                        ]
+                    ])
                 ],
             ]
         ];
