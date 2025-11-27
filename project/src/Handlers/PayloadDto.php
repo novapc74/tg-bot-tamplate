@@ -20,7 +20,7 @@ final class PayloadDto implements TelegramPayloadInterface
 
     public function getText(): ?string
     {
-        return self::getText();
+        return self::getTextFromBody($this->body);
 //        if ($text = $this->body['message']['text'] ?? null) {
 //            return $text;
 //        }

@@ -33,7 +33,7 @@ trait ModelTrait
         return null;
     }
 
-    public static function getText(array $body): ?string
+    public static function getTextFromBody(array $body): ?string
     {
         static $counter = 0;
         $counter++;
@@ -46,7 +46,7 @@ trait ModelTrait
             if ('text' === $key && is_string($value)) {
                 return trim($value);
             } elseif (is_array($value)) {
-                if ($result = self::getText($value)) {
+                if ($result = self::getTextFromBody($value)) {
                     return $result;
                 }
             }
