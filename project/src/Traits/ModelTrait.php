@@ -16,7 +16,7 @@ trait ModelTrait
         static $counter = 0;
         $counter++;
 
-        if ($counter > 10) {
+        if ($counter > 100) {
             return null;
         }
 
@@ -31,6 +31,29 @@ trait ModelTrait
         }
 
         return null;
+    }
+
+    public static function getText(array $body): ?string
+    {
+        static $counter = 0;
+        $counter++;
+
+        if ($counter > 100) {
+            return null;
+        }
+
+        foreach ($body as $key => $value) {
+            if ('text' === $key && is_string($value)) {
+                return trim($value);
+            } elseif (is_array($value)) {
+                if ($result = self::getText($value)) {
+                    return $result;
+                }
+            }
+        }
+
+        return null;
+
     }
 
 }
