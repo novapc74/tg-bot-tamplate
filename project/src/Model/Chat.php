@@ -10,7 +10,7 @@ class Chat
     const string GROUP = 'group';
     const string SUPERGROUP = 'supergroup';
     const string CHANEL = 'channel';
-    private ?int $id;
+    private ?string $id;
     private ?string $title;
     private ?string $username;
     private ?string $type;
@@ -23,7 +23,7 @@ class Chat
         $this->type = $chatData['type'] ?? null;
     }
 
-    public function getId(): int
+    public function getId(): string
     {
         return $this->id;
     }
