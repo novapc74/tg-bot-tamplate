@@ -17,7 +17,7 @@ final class PayloadDto implements PayloadMessageInterface
         $instance = new self($requestPayload);
         $instance->makeModels($requestPayload);
 
-        return new self($requestPayload);
+        return $instance;
     }
 
     public function getText(): ?string
