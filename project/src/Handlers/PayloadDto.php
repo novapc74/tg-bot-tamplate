@@ -2,14 +2,21 @@
 
 namespace App\Handlers;
 
-final readonly class PayloadDto implements PayloadMessageInterface
+use App\Model\Chat;
+
+final class PayloadDto implements PayloadMessageInterface
 {
-    public function __construct(private array $body)
+    private ?Chat $chat = null;
+
+    public function __construct(private readonly array $body)
     {
     }
 
     public static function init(array $requestPayload): self
     {
+        $instance = new self($requestPayload);
+        $instance->makeModels($requestPayload);
+
         return new self($requestPayload);
     }
 
@@ -37,5 +44,35 @@ final readonly class PayloadDto implements PayloadMessageInterface
         }
 
         return null;
+    }
+
+    public function getChat(): Chat
+    {
+        if ($this->chat === null) {
+            self::makeModels($this->body);
+        }
+
+        return $this->chat;
+    }
+
+    private function makeModels(array $body): void
+    {
+        static $counter = 0;
+
+        if (empty($body)) {
+            return;
+        }
+
+        $modelData = '';
+        foreach ($this->body as $key => $modelData) {
+            if ($key === 'chat' && is_array($modelData)) {
+                $this->chat = new Chat($modelData);
+                return;
+            }
+
+            if (is_array($modelData)) {
+                self::makeModels($modelData);
+            }
+        }
     }
 }

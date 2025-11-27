@@ -4,9 +4,9 @@ namespace App\Services\HttpClient\Dto;
 
 use App\Services\HttpClient\Client\HttpClientResponseInterface;
 
-class OpenRouterResponseDto
+readonly class OpenRouterResponseDto
 {
-    public function __construct(private readonly HttpClientResponseInterface $response)
+    public function __construct(private HttpClientResponseInterface $response)
     {
     }
 

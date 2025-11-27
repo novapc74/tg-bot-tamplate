@@ -25,6 +25,7 @@ $logger = $container->get('telegram-client');
 
 $offset = $i = 0;
 
+#TODO @SCminer_Ether отсюда берем прайсы
 $processing = function (string $text, array $update) use ($container) {
     $text = trim(strtolower($text));
 
