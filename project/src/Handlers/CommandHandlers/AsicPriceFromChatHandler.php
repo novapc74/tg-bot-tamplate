@@ -53,8 +53,7 @@ final readonly class AsicPriceFromChatHandler extends AbstractTelegramBotHandler
     private static function getMessage(): string
     {
         return <<<EOT
-Прайс обработан, можно генерировать\.
-Перейдите в бот `@novapc_bot` и вызовите команду `/asic_price`
+Прайс *обработан*, через секунду отрисуем\.
 EOT;
     }
 }
