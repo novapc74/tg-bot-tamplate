@@ -45,7 +45,7 @@ final readonly class WebhookHandler
             $handler = $this->container->get($handler);
             $handler->handle($dto);
 
-            exit(0);
+            return;
         }
 
         $handler = match ($text) {
