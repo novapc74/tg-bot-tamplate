@@ -7,7 +7,7 @@ final readonly class SendMessageDto implements HttpClientDtoInterface
     public function __construct(
         private string $chatId,
         private string $message,
-        private array $options,
+        private array  $options,
     )
     {
     }
@@ -24,29 +24,32 @@ final readonly class SendMessageDto implements HttpClientDtoInterface
 
     public function getParams(): array
     {
+
+        $inline = [
+            'inline_keyboard' => [
+                [
+                    [
+                        'text' => 'Open',
+                        'web_app' => [
+                            'url' => 'https://t.me/novapc_bot/novapc_app'
+                        ]
+                    ]
+                ],
+            ]
+        ];
+
         $params = [
             'json' => [
                 'chat_id' => $this->chatId,
                 'text' => $this->message,
                 'parse_mode' => 'Markdown',
-                'reply_markup' => [
-                    'inline_keyboard' => [
-                        [
-                            [
-                                'text' => 'Open',
-                                'web_app' => [
-                                    'url' => 'https://t.me/novapc_bot/novapc_app'
-                                ]
-                            ]
-                        ],
-                    ],
-                ],
+                'reply_markup' => json_encode($inline),
             ]
         ];
 
         if (!empty($this->options)) {
             $params = [
-             'json' => array_merge($params['json'], $this->options)
+                'json' => array_merge($params['json'], $this->options)
             ];
 
         }
