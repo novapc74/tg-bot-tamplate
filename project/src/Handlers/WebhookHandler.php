@@ -27,18 +27,18 @@ final readonly class WebhookHandler
     {
         $text = $dto->getText();
         if ($dto->getChat()->getId() == '-1003373031540') {
-            $text = '-1003373031540';
+            $handler = AsicPriceFromChatHandler::class;
+        } else {
+            $handler = match ($text) {
+                HelpCommandHandler::COMMAND_NAME => HelpCommandHandler::class,
+                ShowPromptCommandHandler::COMMAND_NAME => ShowPromptCommandHandler::class,
+                StartCommandHandler::COMMAND_NAME => StartCommandHandler::class,
+                ReportCommandHandler::COMMAND_NAME => ReportCommandHandler::class,
+                AsicPriceGeneratorHandler::COMMAND_NAME => AsicPriceGeneratorHandler::class,
+                AsicPriceFromChatHandler::COMMAND_NAME => AsicPriceFromChatHandler::class,
+                default => DefaultCommandHandler::class
+            };
         }
-
-        $handler = match ($text) {
-            HelpCommandHandler::COMMAND_NAME => HelpCommandHandler::class,
-            ShowPromptCommandHandler::COMMAND_NAME => ShowPromptCommandHandler::class,
-            StartCommandHandler::COMMAND_NAME => StartCommandHandler::class,
-            ReportCommandHandler::COMMAND_NAME => ReportCommandHandler::class,
-            AsicPriceGeneratorHandler::COMMAND_NAME => AsicPriceGeneratorHandler::class,
-            AsicPriceFromChatHandler::COMMAND_NAME => AsicPriceFromChatHandler::class,
-            default => DefaultCommandHandler::class
-        };
 
         $this->logger->info(sprintf('Handler received: %s, text: %s', $handler, $text));
 
