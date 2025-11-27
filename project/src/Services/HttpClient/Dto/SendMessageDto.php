@@ -24,26 +24,25 @@ final readonly class SendMessageDto implements HttpClientDtoInterface
 
     public function getParams(): array
     {
-
-        $inline = [
-            'inline_keyboard' => [
+        $inlineKeyboard = [
+            [
                 [
-                    [
-                        'text' => 'Open',
-                        'web_app' => [
-                            'url' => 'https://t.me/novapc_bot/novapc_app'
-                        ]
-                    ]
-                ],
+                    "text" => "Открыть Mini App",
+                    "url" => 'https://t.me/novapc_bot/novapc_app'
+                ]
             ]
         ];
+
+        $inlineKeyboardMarkup = json_encode([
+            "inline_keyboard" => $inlineKeyboard
+        ]);
 
         $params = [
             'json' => [
                 'chat_id' => $this->chatId,
                 'text' => $this->message,
                 'parse_mode' => 'Markdown',
-//                'reply_markup' => json_encode($inline),
+                'reply_markup' => $inlineKeyboardMarkup,
             ]
         ];
 
