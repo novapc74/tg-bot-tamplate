@@ -3,10 +3,11 @@
 namespace App\Handlers;
 
 use App\Model\Chat;
+use App\Traits\ModelTrait;
 
 final class PayloadDto implements PayloadMessageInterface
 {
-    private ?Chat $chat = null;
+    use ModelTrait;
 
     public function __construct(private readonly array $body)
     {
@@ -14,10 +15,7 @@ final class PayloadDto implements PayloadMessageInterface
 
     public static function init(array $requestPayload): self
     {
-        $instance = new self($requestPayload);
-        $instance->makeModels($requestPayload);
-
-        return $instance;
+        return new self($requestPayload);
     }
 
     public function getText(): ?string
@@ -48,31 +46,6 @@ final class PayloadDto implements PayloadMessageInterface
 
     public function getChat(): Chat
     {
-        if ($this->chat === null) {
-            self::makeModels($this->body);
-        }
-
-        return $this->chat;
-    }
-
-    private function makeModels(array $body): void
-    {
-        static $counter = 0;
-
-        if (empty($body)) {
-            return;
-        }
-
-        $modelData = '';
-        foreach ($this->body as $key => $modelData) {
-            if ($key === 'chat' && is_array($modelData)) {
-                $this->chat = new Chat($modelData);
-                return;
-            }
-
-            if (is_array($modelData)) {
-                self::makeModels($modelData);
-            }
-        }
+        return self::getModel($this->body, 'chat', Chat::class);
     }
 }
