@@ -5,8 +5,6 @@ services:
         build:
             context: docker
             dockerfile: node-cli/Dockerfile
-        ports:
-            - "3000:3000"
         volumes:
             - ./project:/project
         networks:

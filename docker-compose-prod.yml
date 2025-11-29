@@ -1,4 +1,12 @@
 services:
+    node-cli:
+        container_name: ${APP_NAME}-node-cli
+        image: ghcr.io/novapc74/repository/tg_node-cli:master
+        volumes:
+            - ./project:/project
+        networks:
+            - tg-bot-network
+
     nginx:
         restart: always
         image: ghcr.io/novapc74/repository/tg_nginx:master
