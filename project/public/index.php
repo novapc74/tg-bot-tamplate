@@ -214,7 +214,8 @@ $app->get('/admin/prompt/show', function () {
 
         return View::init()
             ->render('pages/prompt/_show.php', [
-                'file_content' => $content
+                'file_content' => $content,
+                'meta_title' => 'Prompt'
             ]);
     }
 
@@ -282,7 +283,8 @@ $app->get('/admin/help/show', function () {
 
         return View::init()
             ->render('pages/help/_show.php', [
-                'file_content' => $content
+                'file_content' => $content,
+                'meta_title' => 'Manual'
             ]);
     }
 
