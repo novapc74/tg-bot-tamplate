@@ -1,13 +1,10 @@
+@import "reset.css";
+@import "./home_page/home_page.css";
 @import "file_form.css";
 @import "navbar.css";
 @import "main.css";
 @import "footer.css";
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
 html, body {
     background: #fff;

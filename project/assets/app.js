@@ -1,2 +1,9 @@
+// import stimulus
+import './bootstrap';
+
+// import styles
 import './css/app.css';
-import './js/app';
+
+// import js
+// import './js/app';
+

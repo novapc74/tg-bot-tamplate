@@ -1,4 +1,4 @@
-{% extends 'base.php' %}
+{% extends 'app_base.php' %}
 
 {% block body %}
 <div style="text-align: center; padding-top: 30px;">

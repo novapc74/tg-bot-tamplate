@@ -83,3 +83,6 @@ yarn-build:
 	cd project
 	docker compose -f docker-compose-prod.yml --env-file ./project/.env.local run --rm node-cli yarn build
 
+yarn-add:
+	cd project
+	docker compose -f docker-compose-prod.yml --env-file ./project/.env.local run --rm node-cli yarn add vite @hotwired/stimulus

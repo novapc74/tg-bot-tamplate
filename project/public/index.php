@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use App\App;
-use App\Enum\FileHelper;
 use App\Views\View;
+use App\Enum\FileHelper;
 use Psr\Log\LoggerInterface;
 use App\Handlers\PayloadDto;
 use App\Handlers\WebhookHandler;
@@ -35,8 +35,8 @@ try {
 }
 
 $app->get('/', function () {
-    header('Location: admin');
-    exit();
+    return View::init()
+        ->render('pages/home/index.php');
 });
 
 $app->post('/webhook-endpoint', function (TgRequestInterface $request) use ($container) {
@@ -197,7 +197,6 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
         ]);
 });
 
-
 $app->get('/admin/prompt/create', function () {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
@@ -209,7 +208,7 @@ $app->get('/admin/prompt/create', function () {
 });
 
 $app->get('/admin/prompt/show', function () {
-    $file = __DIR__ . '/../storage/telegram/prompt.json';
+    $file = FileHelper::PROMPT_FILE_PATH->value;
 
     if (is_file($file)) {
         $content = file_get_contents($file);
@@ -277,14 +276,14 @@ $app->get('/admin/help/download', function () {
         ]);
 });
 
-$app->get('/admin/help/show', function () {
-    $file = __DIR__ . '/../storage/telegram/manual.md';
+$app->get('/admin/manual/show', function () {
+    $file = FileHelper::MANUAL_FILE_PATH->value;
 
     if (is_file($file)) {
         $content = file_get_contents($file);
 
         return View::init()
-            ->render('pages/help/_show.php', [
+            ->render('pages/manual/_show.php', [
                 'file_content' => $content,
                 'meta_title' => 'Manual'
             ]);

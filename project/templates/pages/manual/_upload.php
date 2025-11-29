@@ -1,4 +1,4 @@
-{% extends 'base.php' %}
+{% extends 'layout/admin.php' %}
 
 {% block body %}
 <section class="upload-prompt">

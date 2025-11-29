@@ -1,4 +1,4 @@
-{% extends 'base.php' %}
+{% extends 'layout/admin.php' %}
 
 {% block body %}
 <h1 style="padding-top: 40px; text-align: center;">Админ панель 🛠</h1>

@@ -1,4 +1,4 @@
-{% extends 'base.php' %}
+{% extends 'layout/admin.php' %}
 
 {% block body %}
 <h1 style="padding-top: 40px">Prompt file content:</h1>
