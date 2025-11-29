@@ -77,9 +77,9 @@ reload-nginx:
 
 yarn-install:
 	cd project
-	docker compose --env-file ./project/.env.local run --rm node-cli yarn install
+	docker compose -f docker-compose-prod.yml --env-file ./project/.env.local run --rm node-cli yarn install
 
 yarn-build:
 	cd project
-	docker compose --env-file ./project/.env.local run --rm node-cli yarn build
+	docker compose -f docker-compose-prod.yml --env-file ./project/.env.local run --rm node-cli yarn build
 
