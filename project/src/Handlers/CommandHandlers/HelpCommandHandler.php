@@ -2,8 +2,9 @@
 
 namespace App\Handlers\CommandHandlers;
 
-use App\Handlers\AbstractTelegramBotHandler;
+use App\Enum\FileHelper;
 use App\Handlers\TelegramPayloadInterface;
+use App\Handlers\AbstractTelegramBotHandler;
 use App\Services\HttpClient\Dto\SendMessageDto;
 
 final readonly class HelpCommandHandler extends AbstractTelegramBotHandler
@@ -23,7 +24,7 @@ final readonly class HelpCommandHandler extends AbstractTelegramBotHandler
             'parse_mode' => 'HTML',
         ];
 
-        $helpFile = __DIR__ . '/../../../storage/telegram/manual.md';
+        $helpFile = FileHelper::MANUAL_FILE_PATH->value;
         if (file_exists($helpFile)) {
             $text = file_get_contents($helpFile);
             $options = [

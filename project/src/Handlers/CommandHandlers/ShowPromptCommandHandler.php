@@ -2,6 +2,7 @@
 
 namespace App\Handlers\CommandHandlers;
 
+use App\Enum\FileHelper;
 use App\Handlers\AbstractTelegramBotHandler;
 use App\Handlers\TelegramPayloadInterface;
 use App\Services\HttpClient\Dto\SendMessageDto;
@@ -17,7 +18,7 @@ final readonly class ShowPromptCommandHandler extends AbstractTelegramBotHandler
             return;
         }
 
-        $promptFile = __DIR__ . '/../../../storage/telegram/prompt.json';
+        $promptFile = FileHelper::PROMPT_FILE_PATH->value;
         if (file_exists($promptFile)) {
             $fileData = file_get_contents($promptFile);
             $text = <<<EOT
