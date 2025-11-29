@@ -2,18 +2,19 @@
 
 namespace App;
 
-use App\Middleware\CsrfMiddleware;
 use Exception;
 use Throwable;
 use App\Views\View;
 use Psr\Log\LoggerInterface;
 use App\Middleware\AuthMiddleware;
+use App\Middleware\CsrfMiddleware;
 use App\Services\Request\TgRequestInterface;
 
 final class App
 {
     private array $handlers = [];
 
+    #TODO внедрить new View() и пробросить в кнтейнере пути к manifest
     public function __construct(
         private readonly LoggerInterface    $logger,
         private readonly TgRequestInterface $request
@@ -74,7 +75,7 @@ final class App
                     http_response_code(500);
                     $this->logger->error(sprintf('Callback error: %s', $e->getMessage()));
 
-                    echo (new View())
+                    echo View::init()
                         ->render('pages/error/_404.php', [
                             'error' => 'Internal Server Error',
                             'meta_title' => 'Page 500',
@@ -105,7 +106,7 @@ final class App
 
         header('Content-Type: text/html; charset=utf-8');
 
-        echo (new View())
+        echo View::init()
             ->render('pages/error/_404.php', [
                 'error' => $message,
                 'meta_title' => 'Page 404',

@@ -40,7 +40,7 @@ class CsrfMiddleware
         if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
 
             http_response_code(403);
-            echo (new View())
+            echo View::init()
                 ->render('pages/error/_404.php', [
                     'code' => 403,
                     'error' => 'Обнаружена CSRF атака!'

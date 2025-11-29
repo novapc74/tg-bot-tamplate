@@ -78,11 +78,10 @@ $app->get('/login', function () use ($container) {
     header('Content-Type: text/html; charset=utf-8');
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
-    return (new View())
-        ->render('pages/admin/_login.php', [
-            'meta_title' => 'Login',
-            'csrf_token' => $_SESSION['csrf_token'],
-        ]);
+    return View::init()->render('pages/admin/_login.php', [
+        'meta_title' => 'Login',
+        'csrf_token' => $_SESSION['csrf_token'],
+    ]);
 });
 
 $app->get('/logout', function (TgRequestInterface $request) {
@@ -110,7 +109,7 @@ $app->get('/admin', function () {
     $message = $_SESSION['FLASH'] ?? null;
     $_SESSION['FLASH'] = false;
 
-    return (new View())
+    return View::init()
         ->render('pages/admin/_index.php', [
             'meta_title' => 'Admin panel',
             'flash' => $message
@@ -118,8 +117,7 @@ $app->get('/admin', function () {
 });
 
 $app->get('/admin/help/create', function () {
-    return (new View())
-        ->render('pages/help/_upload.php', [
+    return View::init()->render('pages/help/_upload.php', [
             'csrf_token' => $_SESSION['csrf_token'],
             'meta_title' => 'Upload history',
         ]);
@@ -129,7 +127,7 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
     /** @var UploadFileInterface $file */
     if (!$file = $request->getFiles()[0] ?? null) {
         http_response_code(400);
-        return (new View())
+        return View::init()
             ->render('pages/error/_404.php', [
                 'code' => 400,
                 'error' => 'Файл не загрузился.',
@@ -145,7 +143,7 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
 
     if ($file->error() !== UPLOAD_ERR_OK) {
         http_response_code(422);
-        return (new View())
+        return View::init()
             ->render('pages/error/_404.php', [
                 'code' => 400,
                 'error' => 'Ошибка загрузки файла: ' . $file->name(),
@@ -155,7 +153,7 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
 
     if ($file->size() > 2 * 1024 * 1024) {  // 2MB
         http_response_code(422);
-        return (new View())
+        return View::init()
             ->render('pages/error/_404.php', [
                 'code' => 400,
                 'error' => 'Файл слишком большой:' . $file->name(),
@@ -166,7 +164,7 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
     $fileContent = file_get_contents($file->tmp_name());
     if (!json_validate($fileContent)) {
         http_response_code(422);
-        return (new View())
+        return View::init()
             ->render('pages/error/_404.php', [
                 'code' => 400,
                 'error' => 'Файл содержит невалидный json: ' . $file->name(),
@@ -182,8 +180,7 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
     }
 
     http_response_code(422);
-    return (new View())
-        ->render('pages/error/_404.php', [
+    return View::init()->render('pages/error/_404.php', [
             'code' => 400,
             'error' => 'Ошибка записи файла на сервер: ' . $file->name(),
             'meta_title' => 'Error page',
@@ -194,7 +191,7 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
 $app->get('/admin/prompt/create', function () {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
-    return (new View())
+    return View::init()
         ->render('pages/prompt/_upload.php', [
             'csrf_token' => $_SESSION['csrf_token'],
             'meta_title' => 'Upload prompt',
@@ -207,13 +204,13 @@ $app->get('/admin/prompt/show', function () {
     if (is_file($file)) {
         $content = file_get_contents($file);
 
-        return (new View())
+        return View::init()
             ->render('pages/prompt/_show.php', [
                 'file_content' => $content
             ]);
     }
 
-    return (new View())
+    return View::init()
         ->render('pages/error/_404.php', [
             'code' => '422',
             'meta_title' => 'Error page',
@@ -237,7 +234,7 @@ $app->get('/admin/prompt/download', function () {
         return readfile($file);
     }
 
-    return (new View())
+    return View::init()
         ->render('pages/error/_404.php', [
             'code' => '422',
             'meta_title' => 'Error page',
@@ -261,7 +258,7 @@ $app->get('/admin/help/download', function () {
         return readfile($file);
     }
 
-    return (new View())
+    return View::init()
         ->render('pages/error/_404.php', [
             'code' => '422',
             'meta_title' => 'Error page',
@@ -275,13 +272,13 @@ $app->get('/admin/help/show', function () {
     if (is_file($file)) {
         $content = file_get_contents($file);
 
-        return (new View())
+        return View::init()
             ->render('pages/help/_show.php', [
                 'file_content' => $content
             ]);
     }
 
-    return (new View())
+    return View::init()
         ->render('pages/error/_404.php', [
             'code' => '422',
             'meta_title' => 'Error page',
@@ -293,7 +290,7 @@ $app->post('/admin/help/upload', function (TgRequestInterface $request) {
     /** @var UploadFileInterface $file */
     if (!$file = $request->getFiles()[0] ?? null) {
         http_response_code(400);
-        return (new View())
+        return View::init()
             ->render('pages/error/_404.php', [
                 'code' => 400,
                 'error' => 'Файл не загрузился.',
@@ -309,7 +306,7 @@ $app->post('/admin/help/upload', function (TgRequestInterface $request) {
 
     if ($file->error() !== UPLOAD_ERR_OK) {
         http_response_code(422);
-        return (new View())
+        return View::init()
             ->render('pages/error/_404.php', [
                 'code' => 400,
                 'error' => 'Ошибка загрузки файла: ' . $file->name(),
@@ -319,7 +316,7 @@ $app->post('/admin/help/upload', function (TgRequestInterface $request) {
 
     if ($file->size() > 2 * 1024 * 1024) {  // 2MB
         http_response_code(422);
-        return (new View())
+        return View::init()
             ->render('pages/error/_404.php', [
                 'code' => 400,
                 'error' => 'Файл слишком большой:' . $file->name(),
@@ -331,7 +328,7 @@ $app->post('/admin/help/upload', function (TgRequestInterface $request) {
 
     if ('md' !== strtolower($fileExtension)) {
         http_response_code(422);
-        return (new View())
+        return View::init()
             ->render('pages/error/_404.php', [
                 'code' => 400,
                 'error' => 'Файл с недопустимым расширением:' . $file->name(),
@@ -347,7 +344,7 @@ $app->post('/admin/help/upload', function (TgRequestInterface $request) {
     }
 
     http_response_code(422);
-    return (new View())
+    return View::init()
         ->render('pages/error/_404.php', [
             'code' => 400,
             'error' => 'Ошибка записи файла на сервер: ' . $file->name(),

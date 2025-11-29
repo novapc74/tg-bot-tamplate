@@ -30,3 +30,6 @@ RUN adduser -D -u $UID -s /bin/bash develop && \
     chown -R develop:develop /project
 
 USER develop
+
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+    CMD curl --fail http://localhost:80 || exit 1

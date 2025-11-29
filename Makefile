@@ -57,6 +57,7 @@ image-docker-build:
 	docker --log-level=debug build --pull --file=docker/prod/nginx/Dockerfile --tag=ghcr.io/novapc74/repository/tg_nginx:master .
 	docker --log-level=debug build --pull --file=docker/prod/php-cli/Dockerfile --tag=ghcr.io/novapc74/repository/tg_php-cli:master .
 	docker --log-level=debug build --pull --file=docker/prod/php-fpm/Dockerfile --tag=ghcr.io/novapc74/repository/tg_php-fpm:master .
+	docker --log-level=debug build --pull --file=docker/node-cli/Dockerfile --tag=ghcr.io/novapc74/repository/tg_node-cli:master .
 
 github-login:
 	docker login ghcr.io -u novapc74 -p GIT_USER_PASS # https://github.com/settings/tokens Token (classic)
@@ -65,6 +66,7 @@ image-docker-push:
 	docker push ghcr.io/novapc74/repository/tg_nginx:master
 	docker push ghcr.io/novapc74/repository/tg_php-cli:master
 	docker push ghcr.io/novapc74/repository/tg_php-fpm:master
+	docker push ghcr.io/novapc74/repository/tg_node-cli:master
 
 # /etc/cron.d/certbot
 certbot:
@@ -72,3 +74,12 @@ certbot:
 
 reload-nginx:
 	docker compose -f /var/www/tg-bot/docker-compose-prod.yml --env-file /var/www/tg-bot/project/.env.local exec nginx nginx -s stop
+
+yarn-install:
+	cd project
+	docker compose --env-file ./project/.env.local run --rm node-cli yarn install
+
+yarn-build:
+	cd project
+	docker compose --env-file ./project/.env.local run --rm node-cli yarn build
+

@@ -7,12 +7,47 @@ use Exception;
 
 class View
 {
-    private const string CSS_FILE = '/build/css/app.css';
-    private const string JS_FILE = '/build/js/app.js';
-    private const string TEMPLATES_DIR = '/project/templates/';
-
     private array $blocks = [];
     private array $variables = [];
+    private ?string $css;
+    private ?string $js;
+    private const string TEMPLATES_DIR = '/project/templates/';
+
+    public function __construct()
+    {
+        if ($manifest = self::getManifest()) {
+            if ($jsFile = $manifest['../assets/app.js']['file'] ?? null) {
+                $this->js = "/build/$jsFile";
+            }
+
+            if ($cssFile = $manifest['../assets/app.js']['css'][0] ?? null) {
+                $this->css = "/build/$cssFile";
+            }
+        }
+    }
+
+    public static function init(): self
+    {
+        return new self();
+    }
+
+    private static function getManifest(): ?array
+    {
+        $manifestFile = __DIR__ . '/../../public/build/.vite/manifest.json';
+        if (!file_exists($manifestFile)) {
+            return null;
+        }
+
+        if (!empty($manifestFileContent = file_get_contents($manifestFile))) {
+            $data = json_decode($manifestFileContent, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $data;
+            }
+        }
+
+        return null;
+    }
+
 
     /**
      * @throws Exception
@@ -22,13 +57,12 @@ class View
         $this->variables = array_merge($variables, $localVars);
 
         $content = $this->loadTemplate($templatePath);
-        // Сначала обрабатываем extends и blocks
         $content = $this->processExtends($content);
         $content = $this->processBlocks($content);
-        // Затем includes (теперь они могут быть внутри блоков)
         $content = $this->processIncludes($content);
 
         $this->replaceVariables($content);
+
         $this->processCustomTags($content);
 
         return $content;
@@ -144,10 +178,20 @@ class View
      *
      * @param string $content
      * @return void
+     * @throws Exception
      */
     private function processCustomTags(string &$content): void
     {
-        $content = preg_replace('/\{\%\s*app_js\s*\%\}/', '<script type="module" src="' . self::JS_FILE . '"></script>', $content);
-        $content = preg_replace('/\{\%\s*app_css\s*\%\}/', '<link rel="stylesheet" href="' . self::CSS_FILE . '">', $content);
+        if (empty($this->css)) {
+            $content = str_replace('{% app_css %}', '', $content);
+        } else {
+            $content = preg_replace('/\{\%\s*app_css\s*\%\}/', '<link rel="stylesheet" href="' . $this->css . '">', $content);
+        }
+
+        if (empty($this->js)) {
+            $content = str_replace('{% app_js %}', '', $content);
+        } else {
+            $content = preg_replace('/\{\%\s*app_js\s*\%\}/', '<script type="module" src="' . $this->js . '"></script>', $content);
+        }
     }
 }

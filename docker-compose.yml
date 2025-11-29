@@ -1,4 +1,20 @@
 services:
+
+    node-cli:
+        container_name: ${APP_NAME}-node-cli
+        build:
+            context: docker
+            dockerfile: node-cli/Dockerfile
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./project:/project
+        networks:
+            - tg-bot-network
+        depends_on:
+            - php-fpm
+            - php-cli
+
     nginx:
         restart: always
         container_name: ${APP_NAME}-nginx
@@ -9,9 +25,6 @@ services:
             - "8023:80"
         volumes:
             - ./project:/project
-        depends_on:
-            - php-fpm
-            - php-cli
         networks:
             - tg-bot-network
 
