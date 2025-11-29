@@ -11,5 +11,6 @@
 
 public/build
 yarn.lock
+storage/*
 
 

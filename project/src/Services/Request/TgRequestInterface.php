@@ -12,5 +12,7 @@ interface TgRequestInterface
 
     public function getFiles(): ?array;
 
+    public function getFile(): ?UploadFileInterface;
+
     public function authenticate(): bool;
 }

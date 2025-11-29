@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use App\App;
+use App\Enum\FileHelper;
 use App\Views\View;
 use Psr\Log\LoggerInterface;
 use App\Handlers\PayloadDto;
@@ -80,9 +81,9 @@ $app->get('/login', function () use ($container) {
 
     return View::init()
         ->render('pages/admin/_login.php', [
-        'meta_title' => 'Login',
-        'csrf_token' => $_SESSION['csrf_token'],
-    ]);
+            'meta_title' => 'Login',
+            'csrf_token' => $_SESSION['csrf_token'],
+        ]);
 });
 
 $app->get('/logout', function (TgRequestInterface $request) {
@@ -125,14 +126,15 @@ $app->get('/admin', function () {
 
 $app->get('/admin/help/create', function () {
     return View::init()->render('pages/help/_upload.php', [
-            'csrf_token' => $_SESSION['csrf_token'],
-            'meta_title' => 'Upload history',
-        ]);
+        'csrf_token' => $_SESSION['csrf_token'],
+        'meta_title' => 'Upload manual',
+    ]);
 });
 
+#TODO убрать дублирование, и переписать более локанично :)
 $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
     /** @var UploadFileInterface $file */
-    if (!$file = $request->getFiles()[0] ?? null) {
+    if (!$file = $request->getFile() ?? null) {
         http_response_code(400);
         return View::init()
             ->render('pages/error/_404.php', [
@@ -142,7 +144,8 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
             ]);
     }
 
-    $fileDir = __DIR__ . '/../storage/telegram/';
+    $fileDir = FileHelper::FILE_DIR->value;
+    $fileName = FileHelper::PROMPT->value;
 
     if (!is_dir($fileDir)) {
         mkdir($fileDir, 0755, true);
@@ -179,8 +182,7 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
             ]);
     }
 
-    $targetPath = $fileDir . 'prompt.json';
-    if (file_put_contents($targetPath, $fileContent)) {
+    if (file_put_contents(FileHelper::PROMPT_FILE_PATH->value, $fileContent)) {
         header('Location: /admin');
         $_SESSION['FLASH'] = 'Файл успешно сохранен на сервере.';
         exit();
@@ -308,7 +310,8 @@ $app->post('/admin/help/upload', function (TgRequestInterface $request) {
             ]);
     }
 
-    $fileDir = __DIR__ . '/../storage/telegram/';
+    $fileDir = FileHelper::FILE_DIR->value;
+    $fileName = FileHelper::MANUAL->value;
 
     if (!is_dir($fileDir)) {
         mkdir($fileDir, 0755, true);
@@ -347,7 +350,7 @@ $app->post('/admin/help/upload', function (TgRequestInterface $request) {
     }
 
     $fileContent = file_get_contents($file->tmp_name());
-    if (file_put_contents($fileDir . 'manual.md', $fileContent)) {
+    if (file_put_contents(FileHelper::MANUAL_FILE_PATH->value, $fileContent)) {
         header('Location: /admin');
         $_SESSION['FLASH'] = 'Файл успешно сохранен на сервере.';
         exit();

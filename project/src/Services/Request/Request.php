@@ -196,4 +196,9 @@ class Request extends AbstractSingleton implements TgRequestInterface, AuthInter
 
         header('Location: admin');
     }
+
+    public function getFile(): ?UploadFileInterface
+    {
+        return $this->getFiles()[0] ?? null;
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Handlers\CommandHandlers;
 
+use App\Enum\FileHelper;
 use App\Handlers\TelegramPayloadInterface;
 use App\Handlers\AbstractTelegramBotHandler;
 use App\Services\HttpClient\Dto\SendMessageDto;
@@ -17,7 +18,7 @@ final readonly class ReportCommandHandler extends AbstractTelegramBotHandler
             return;
         }
 
-        $promptFile = __DIR__ . '/../../../storage/telegram/prompt.json';
+        $promptFile = FileHelper::PROMPT_FILE_PATH->value;
 
         if (!is_file($promptFile)) {
             $this->logger->error('Не найден файл по пути: ' . $promptFile);
