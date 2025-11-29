@@ -78,7 +78,8 @@ $app->get('/login', function () use ($container) {
     header('Content-Type: text/html; charset=utf-8');
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
-    return View::init()->render('pages/admin/_login.php', [
+    return View::init()
+        ->render('pages/admin/_login.php', [
         'meta_title' => 'Login',
         'csrf_token' => $_SESSION['csrf_token'],
     ]);
@@ -90,7 +91,13 @@ $app->get('/logout', function (TgRequestInterface $request) {
 
 $app->post('/auth', function (TgRequestInterface $request) {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die('Обнаружена CSRF атака!');
+
+        return View::init()
+            ->render('pages/error/_404.php', [
+                'code' => 400,
+                'error' => 'invalid csrf token.',
+                'meta_title' => 'Error page',
+            ]);
     }
 
     /** refresh token */
@@ -180,7 +187,8 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
     }
 
     http_response_code(422);
-    return View::init()->render('pages/error/_404.php', [
+    return View::init()
+        ->render('pages/error/_404.php', [
             'code' => 400,
             'error' => 'Ошибка записи файла на сервер: ' . $file->name(),
             'meta_title' => 'Error page',
