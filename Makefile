@@ -33,8 +33,11 @@ docker-up: create_network
 docker-prod-up:
 	docker compose -f docker-compose-prod.yml --env-file ./project/.env.local up -d
 
-php-cli:
+php-cli-dev:
 	docker compose --env-file ./project/.env.local run --rm php-cli bash
+
+php-cli-prod:
+	docker compose -f /var/www/tg-bot/docker-compose-prod.yml --env-file ./project/.env.local run --rm php-cli bash
 
 dev-update:
 	docker compose --env-file ./project/.env.local exec php-cli bash

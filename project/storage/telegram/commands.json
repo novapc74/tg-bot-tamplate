@@ -15,6 +15,10 @@
         {
             "command": "/asic_price",
             "description": "- Показать прайс асиков"
+        },
+        {
+            "command": "/crypto_price",
+            "description": "- Показать прайс крипто валют"
         }
     ],
     "scope": {

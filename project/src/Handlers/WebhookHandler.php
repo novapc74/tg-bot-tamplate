@@ -4,6 +4,7 @@ namespace App\Handlers;
 
 use App\Handlers\CommandHandlers\AsicPriceFromChatHandler;
 use App\Handlers\CommandHandlers\AsicPriceToChatHandler;
+use App\Handlers\CommandHandlers\CryptoCurrencyPriceHandler;
 use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -55,6 +56,7 @@ final readonly class WebhookHandler
             ReportCommandHandler::COMMAND_NAME => ReportCommandHandler::class,
             AsicPriceGeneratorHandler::COMMAND_NAME => AsicPriceGeneratorHandler::class,
             AsicPriceFromChatHandler::COMMAND_NAME => AsicPriceFromChatHandler::class,
+            CryptoCurrencyPriceHandler::COMMAND_NAME => CryptoCurrencyPriceHandler::class,
             default => DefaultCommandHandler::class
         };
 

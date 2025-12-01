@@ -1,0 +1,80 @@
+#!/usr/bin/env php
+<?php
+
+use App\Services\HttpClient\Dto\RubUsdtCurrencyDto;
+use App\Services\HttpClient\Dto\TopCryptoCurrencyDto;
+use App\Services\HttpClient\Client\ApiCoinGeckoClient;
+use App\Services\HttpClient\Dto\RubUsdtChange24hrCurrencyDto;
+
+if (!file_exists($bootstrap = __DIR__ . '/../config/bootstrap.php')) {
+    exit('Bootstrap file not found.');
+}
+
+require_once $bootstrap;
+
+global $container;
+
+$high = '📈 ';
+$low = '📉 ';
+
+/** @var ApiCoinGeckoClient $client */
+$client = $container->get(ApiCoinGeckoClient::class);
+
+$response = $client->request(TopCryptoCurrencyDto::init());
+
+if (!$data = $response?->getData()) {
+    exit("Empty currency data, try later.\n");
+}
+
+$topCryptoCurrencies = [];
+$maxLengthSymbol = $maxLengthPrice = $maxLengthPercent = 0;
+
+/** формируем максимальную длину строк для названия, цены и процентов */
+foreach ($data as &$currency) {
+    $maxLengthPrice = max([$maxLengthPrice, strlen($currency['current_price'])]);
+    $maxLengthPercent = max([$maxLengthPercent, strlen($currency['price_change_percentage_24h'])]);
+    $currency['symbol'] = strtoupper($currency['symbol'] . '/USD:');
+    $maxLengthSymbol = max([$maxLengthSymbol, strlen($currency['symbol'])]);
+}
+
+$result = [];
+
+/** формируем итоговый массив для топ-5 валют */
+foreach ($data as &$currency) {
+    $price = mb_str_pad($currency['current_price'], $maxLengthPrice, ' ', STR_PAD_LEFT);
+    $priceChangePercentage = mb_str_pad($currency['price_change_percentage_24h'], $maxLengthPercent, ' ', STR_PAD_LEFT) . '%';
+    $symbol = mb_str_pad($currency['symbol'], $maxLengthSymbol, ' ', 1);
+    $rowType = $currency['price_change_percentage_24h'] >= 0 ? $high : $low;
+    $result[] = "$symbol $price $rowType $priceChangePercentage";
+}
+
+$result[] = str_repeat('=', strlen($result[1]) - 2);
+
+/** формируем отношение RUB/USDT по шаблону валют */
+$response = $client->request(RubUsdtCurrencyDto::init());
+$data = $response->getData();
+$rubToUsdt = $data['tether']['rub'];
+
+$response = $client->request(RubUsdtChange24hrCurrencyDto::init());
+$data = $response->getData();
+
+$priceChangePercent = ($data['prices'][1][1] - $data['prices'][0][1]) / $data['prices'][0][1] * 100;
+$rubToUsdt_Change24hr = number_format($priceChangePercent, 2, '.', '');
+
+$rowType = $rubToUsdt_Change24hr >= 0 ? $high : $low;
+$price = mb_str_pad($rubToUsdt, $maxLengthPrice, ' ', STR_PAD_LEFT);
+$priceChangePercentage = mb_str_pad($rubToUsdt_Change24hr, $maxLengthPercent, ' ', STR_PAD_LEFT) . '%';
+$symbol = mb_str_pad('RUB/USDT:', $maxLengthSymbol, ' ', 1);
+
+/** добавляем рубли в конец таблицы */
+$result[] = "$symbol $price $rowType $priceChangePercentage";
+
+/** шапка для таблицы */
+array_unshift($result, "```\n💸 Курсы валют и криптовалют");
+
+$fileContent =  implode("\n", $result) . "\n```";
+
+$filePath = \App\Enum\FileHelper::CRYPTO_PRICE_FILE_PATH->value;
+file_put_contents($filePath, $fileContent);
+
+exit();

@@ -11,7 +11,7 @@ use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 
-abstract class AbstractHttpClient
+abstract class AbstractHttpClient implements CustomHttpClientInterface
 {
     protected array $options;
 

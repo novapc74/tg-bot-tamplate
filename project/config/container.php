@@ -4,6 +4,8 @@ use App\App;
 use App\Handlers\CommandHandlers\AsicPriceFromChatHandler;
 use App\Handlers\CommandHandlers\AsicPriceGeneratorHandler;
 use App\Handlers\CommandHandlers\AsicPriceToChatHandler;
+use App\Handlers\CommandHandlers\CryptoCurrencyPriceHandler;
+use App\Services\HttpClient\Client\ApiCoinGeckoClient;
 use Monolog\Level;
 use Monolog\Logger;
 use DI\ContainerBuilder;
@@ -53,6 +55,10 @@ return function () {
 
         'open-router-token' => function () {
             return $_ENV['OPEN_ROUTER_TOKEN'] ?? throw new Exception('OPEN_ROUTER_TOKEN not set');
+        },
+
+        'coin-gecko-router-url' => function () {
+            return $_ENV['COIN_GECKO_URL'] ?? throw new Exception('COIN_GECKO_URL not set');
         },
 
         'webhook-endpoint' => function () {
@@ -175,6 +181,26 @@ return function () {
             return $logger;
         },
 
+        'coin-gecko-client' => function () {
+            $logger = new Logger('coin-gecko-client');
+            $logger->pushHandler(
+                new RotatingFileHandler(__DIR__ . '/../var/log/coin-gecko-client/coin-gecko-client.log',
+                    10,
+                    Level::Debug
+                ));
+            return $logger;
+        },
+
+        'crypto-price-handler' => function () {
+            $logger = new Logger('crypto-price-handler');
+            $logger->pushHandler(
+                new RotatingFileHandler(__DIR__ . '/../var/log/crypto-price-handler/crypto-price-handler.log',
+                    10,
+                    Level::Debug
+                ));
+            return $logger;
+        },
+
         HttpClientInterface::class => function () {
             return HttpClient::create();
         },
@@ -194,6 +220,15 @@ return function () {
                 $container->get('open-router-url'),
                 $container->get('open-router-token'),
                 $container->get('open-router-client')
+            );
+        },
+
+        ApiCoinGeckoClient::class => function (ContainerInterface $container) {
+            return new ApiCoinGeckoClient(
+                $container->get(HttpClientInterface::class),
+                $container->get('coin-gecko-router-url'),
+                '',
+                $container->get('coin-gecko-client')
             );
         },
 
@@ -269,6 +304,13 @@ return function () {
             return new AsicPriceToChatHandler(
                 $container->get(ApiTelegramClient::class),
                 $container->get('price-to-chat-handler'),
+            );
+        },
+
+        CryptoCurrencyPriceHandler::class => function (ContainerInterface $container) {
+            return new CryptoCurrencyPriceHandler(
+                $container->get(ApiTelegramClient::class),
+                $container->get('crypto-price-handler'),
             );
         },
     ];

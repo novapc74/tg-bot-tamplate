@@ -3,13 +3,12 @@
 namespace App\Handlers;
 
 use Psr\Log\LoggerInterface;
-use App\Services\HttpClient\Client\ApiTelegramClient;
-use App\Services\HttpClient\Client\ApiOpenRouterClient;
+use App\Services\HttpClient\Client\CustomHttpClientInterface;
 
 abstract readonly class AbstractTelegramBotHandler
 {
     public function __construct(
-        protected ApiTelegramClient|ApiOpenRouterClient $client,
+        protected CustomHttpClientInterface $client,
         protected LoggerInterface   $logger
     )
     {
