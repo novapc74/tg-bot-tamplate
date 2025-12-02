@@ -18,5 +18,13 @@
             "name": "novapc74"
         }
     ],
+    "bin":[
+        "bin/exchangeRate",
+        "bin/InlineKeyboardMarkup",
+        "bin/deleteMyCommands",
+        "bin/priceProcessing",
+        "bin/setMyCommands",
+        "bin/updateBot"
+    ],
     "minimum-stability": "stable"
 }
