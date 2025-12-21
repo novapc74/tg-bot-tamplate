@@ -31,8 +31,6 @@ services:
         build:
             context: docker
             dockerfile: php-fpm/Dockerfile
-        ports:
-            - "9000:9000"
         volumes:
             - ./project:/project
         networks:

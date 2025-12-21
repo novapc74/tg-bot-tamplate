@@ -27,7 +27,7 @@ docker-build:
 prod-docker-build:
 	docker compose -f docker-compose-prod.yml --env-file ./project/.env.local build --pull
 
-docker-up: create_network
+docker-up:
 	docker compose --env-file ./project/.env.local up -d
 
 docker-prod-up:
@@ -78,7 +78,7 @@ certbot:
 reload-nginx:
 	docker compose -f /var/www/tg-bot/docker-compose-prod.yml --env-file /var/www/tg-bot/project/.env.local exec nginx nginx -s stop
 
-yarn-install:
+yarn-install-prod:
 	cd project
 	docker compose -f docker-compose-prod.yml --env-file ./project/.env.local run --rm node-cli yarn install
 

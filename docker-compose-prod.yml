@@ -26,8 +26,6 @@ services:
     php-fpm:
         image: ghcr.io/novapc74/repository/tg_php-fpm:master
         container_name: ${APP_NAME}-php-fpm-prod
-        ports:
-            - "9000:9000"
         volumes:
             - ./project:/project
         networks:

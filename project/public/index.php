@@ -145,7 +145,6 @@ $app->post('/admin/prompt/upload', function (TgRequestInterface $request) {
     }
 
     $fileDir = FileHelper::FILE_DIR->value;
-    $fileName = FileHelper::PROMPT->value;
 
     if (!is_dir($fileDir)) {
         mkdir($fileDir, 0755, true);

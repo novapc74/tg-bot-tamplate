@@ -16,3 +16,4 @@ abstract readonly class AbstractTelegramBotHandler
 
     abstract public function handle(TelegramPayloadInterface $dto): void;
 }
+
